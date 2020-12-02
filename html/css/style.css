@@ -1,0 +1,49 @@
+a {
+    color: #3d3d3d;
+    padding: 10px;
+    display: block;
+}
+
+.status > a::after {
+    content: ' /';
+    padding: 0px 0px 0px 10px;
+}
+
+.status >a:last-child::after {
+    content: '';
+}
+
+.container {
+    margin: 0 auto;
+    width: 80%;
+    border: 1px solid #cecece;
+    margin-top: 100px;
+    box-shadow: 3px 3px 3px #cecece;
+}
+
+.checkoutNavigation {
+    position: relative;
+    display: flex;
+    border-bottom: 1px solid #cecece;
+}
+
+.status {
+    display: flex;
+    margin-left: 5%;
+}
+
+.cancelButton {
+    position: absolute;
+    right: 0px;
+    margin: 10px;
+}
+.blocks {
+    display: flex;
+}
+.blocks > div {
+    width: 50%;
+}
+
+.cart-block {
+    background: #dbdbdb;
+}
