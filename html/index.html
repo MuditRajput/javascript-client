@@ -12,25 +12,25 @@
 
 <body>
     <section class="container">
-        <div class="checkoutNavigation">
+        <div class="container__checkoutNavigation">
             <div>
-                <a><b>Checkout</b></a>
+                <a class="container__item container__item--active">Checkout</a>
             </div>
-            <div class="status">
-                <a>Shipping</a>
-                <a><b> Payment Methods </b></a>
-                <a>Confirmation</a>
+            <div class="container__status">
+                <a class="container__item container__item--seperated">Shipping</a>
+                <a class="container__item container__item--seperated container__item--active">Payment Methods</a>
+                <a class="container__item">Confirmation</a>
             </div>
-            <div class="cancelButton">
+            <div class="container__Button--right">
                 <i class="fa fa-window-close" aria-hidden="true"></i>
             </div>
         </div>
-        <div class="blocks">
-            <div>
-                <a>Payment Block</a>
+        <div class="container__blocks">
+            <div class="container__paymentblock">
+                <a class="container__item">Payment Block</a>
             </div>
-            <div class="cart-block">
-                <a>Cart Block</a>
+            <div class="container__cartblock">
+                <a class="container__item">Cart Block</a>
             </div>
         </div>
     </section>

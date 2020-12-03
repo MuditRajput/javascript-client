@@ -1,18 +1,3 @@
-a {
-    color: #3d3d3d;
-    padding: 10px;
-    display: block;
-}
-
-.status > a::after {
-    content: ' /';
-    padding: 0px 0px 0px 10px;
-}
-
-.status >a:last-child::after {
-    content: '';
-}
-
 .container {
     margin: 0 auto;
     width: 80%;
@@ -21,29 +6,48 @@ a {
     box-shadow: 3px 3px 3px #cecece;
 }
 
-.checkoutNavigation {
+.container__checkoutNavigation {
     position: relative;
     display: flex;
     border-bottom: 1px solid #cecece;
 }
 
-.status {
+.container__status {
     display: flex;
     margin-left: 5%;
 }
 
-.cancelButton {
+.container__item {
+    color: #3d3d3d;
+    padding: 10px;
+    display: block;
+}
+
+.container__item--active {
+    font-weight: bold;
+}
+
+.container__item--seperated::after {
+    content: ' /';
+    padding: 0px 0px 0px 10px;
+}
+
+
+.container__Button--right {
     position: absolute;
     right: 0px;
     margin: 10px;
 }
-.blocks {
+
+.container__blocks {
     display: flex;
 }
-.blocks > div {
-    width: 50%;
+
+.container__paymentblock {
+    width: 60%;
 }
 
-.cart-block {
+.container__cartblock {
     background: #dbdbdb;
+    width: 40%;
 }
