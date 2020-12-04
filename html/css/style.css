@@ -8,13 +8,8 @@ html {
     height: max-content;
 }
 
-.bodycover {
-    margin: 0 auto;
-    padding: 50px 0px;
-    width: 85%;
-}
-
 .container {
+    margin: 50px 100px;
     border: 1px solid #cecece;
     box-shadow: 3px 3px 3px #6e6e6e;
     background: white;
