@@ -1,9 +1,23 @@
-.container {
+html {
+    background: none;
+}
+
+.background__image {
+    background: url("../images/background.jpg");
+    background-size: cover;
+    height: max-content;
+}
+
+.bodycover {
     margin: 0 auto;
-    width: 80%;
+    padding: 50px 0px;
+    width: 85%;
+}
+
+.container {
     border: 1px solid #cecece;
-    margin-top: 100px;
-    box-shadow: 3px 3px 3px #cecece;
+    box-shadow: 3px 3px 3px #6e6e6e;
+    background: white;
 }
 
 .container__checkoutNavigation {
@@ -28,15 +42,18 @@
 }
 
 .container__item--seperated::after {
-    content: ' /';
+    content: " /";
     padding: 0px 0px 0px 10px;
 }
-
 
 .container__Button--right {
     position: absolute;
     right: 0px;
     margin: 10px;
+}
+
+.container__Button--right:hover {
+    color: red;
 }
 
 .container__blocks {
@@ -45,9 +62,191 @@
 
 .container__paymentblock {
     width: 60%;
+    display: flex;
+    margin: 4px;
+    flex-direction: column;
+}
+
+.container__wallet {
+    display: flex;
+    flex-direction: column;
+}
+
+.container__title {
+    margin-top: 20px;
+    padding: 5px 5px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #7e7e7e;
+    border-bottom: 1px solid #cecece;
+}
+
+.container__cards {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.container__cardbody {
+    margin-top: 7px;
+    padding: 7px;
+    width: 28%;
+}
+
+.container__cardbody--selected {
+    background: #eeeeee;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+}
+
+.container__cards--image {
+    width: 100%;
+}
+
+.container__card--number {
+    font-size: 10px;
+    color: #3d3d3d;
+}
+
+.container__newcardbody {
+    margin: 10px auto;
+    width: 50%;
+}
+
+.container__input--style {
+    margin: 4px 0px;
+    width: 100%;
+    box-sizing: border-box;
+    opacity: 0.7;
+    border: 1px solid #cecece;
+    padding: 8px 10px;
+}
+
+.container__input--stylehalf {
+    width: 48%;
+    margin: 4px 2.3px;
+}
+
+.container__button--continue {
+    margin: 20px 2px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    color: white;
+    background: #5dc254;
+    border: 1px solid #cecece;
+}
+
+.container__button--continue:hover {
+    background: -webkit-linear-gradient(90deg, #0c8a01, #2cc01e);
+    box-shadow: 2px 2px 2px #cecece;
 }
 
 .container__cartblock {
-    background: #dbdbdb;
+    background: #f7f7f7;
     width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.container__cartlist {
+    margin: 5px;
+}
+
+.container__cartelement {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #cecece;
+}
+
+.container__cartelement:last-child {
+    border: none;
+}
+
+.container__imageholder {
+    padding: 5px;
+    margin-top: 5px;
+    width: 12%;
+    background: #d6d6d6;
+}
+
+.container__cartelement--image {
+    width: 100%;
+}
+
+.container__elementdescription {
+    width: 82%;
+    margin: 5px 0px;
+}
+
+.container__descriptioncombined {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container__name {
+    font-weight: bold;
+    font-size: 16px;
+    display: block;
+    color: #424242;
+}
+
+.container__bucks {
+    text-align: right;
+    font-size: 12px;
+    font-weight: bold;
+    color: #6d6d6d;
+}
+
+.fa-dollar::before {
+    padding-right: 5px;
+    font-weight: 100;
+}
+
+.container__colour {
+    display: block;
+    font-size: 12px;
+    color: #6d6d6d;
+}
+
+.container__quantity {
+    font-size: 12px;
+    color: #6d6d6d;
+}
+
+.container__text--bold {
+    font-weight: bold;
+}
+
+.container__payments {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+    border-top: 1px solid #cecece;
+}
+
+.container__paymentsummary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.container__summarytext {
+    font-size: 14px;
+    color: #6d6d6d;
+    display: block;
+    padding: 5px 2px;
+}
+
+.container__total {
+    border-top: 1px solid #cecece;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.container__summarytext--right {
+    text-align: right;
 }
