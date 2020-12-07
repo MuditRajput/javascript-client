@@ -114,10 +114,11 @@ html {
     opacity: 0.7;
     border: 1px solid #cecece;
     padding: 8px 10px;
+    font-size: 80%;
 }
 
 .container__input--stylehalf {
-    width: 48%;
+    width: 100%;
     margin: 4px 2.3px;
 }
 
@@ -163,6 +164,8 @@ html {
     padding: 5px;
     margin-top: 5px;
     width: 12%;
+    display: flex;
+    height: 100%;
     background: #d6d6d6;
 }
 
@@ -244,4 +247,108 @@ html {
 
 .container__summarytext--right {
     text-align: right;
+}
+
+@media (max-width: 992px) {
+    .bodycover {
+        margin: 0 20px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+
+    .container__paymentblock {
+        width: 50%;
+    }
+
+    .container__cartblock {
+        width: 50%;
+    }
+
+}
+
+@media (min-width: 600px)and (max-width: 768px) {
+    .container__paymentblock {
+        width: 50%;
+    }
+    
+    .container__cartblock {
+        width: 50%;
+    }
+
+    .container__status {
+        display: none;
+    }
+
+    .container__cartlist {
+        margin: 3px;
+    }
+
+    .container__cartelement {
+        padding-bottom: 2px;
+        box-sizing: border-box;
+    }
+
+    .container__imageholder {
+        margin: 2px;
+        width: 17%;
+    }
+
+    .container__elementdescription {
+        margin: 0px;
+        padding-top: 4px;
+        box-sizing: border-box;
+    }
+
+    .container__name {
+        font-size: 12px;
+    }
+
+    .container__colour {
+        font-size: 9px;
+    }
+
+    .container__quantity {
+        font-size: 9px;
+    }
+
+    .container__bucks {
+        font-size: 9px;
+        padding: 2px;
+    }
+
+    .container__summarytext {
+        font-size: 12px;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .container__status {
+        display: none;
+    }
+    
+    .container__blocks {
+        flex-direction: column-reverse;
+    }
+
+    .container__cartblock {
+        width: 100%;
+    }
+
+    .container__paymentblock {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 400px) {
+    .container__cards {
+        flex-direction: column;
+    }
+
+    .container__cardbody {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
