@@ -1,32 +1,20 @@
 import React from 'react';
-import { TextField, Slider } from '../../components';
+import { TextField, P, Slider } from '../../components';
 
 function TextFieldDemo() {
   return (
     <div>
-      <div style={{ background: '#f1f1f1' }}>
-        <Slider
-          height={300}
-          banners={['cloud.jpg', 'dns-server.png', 'full-stack-web-development.jpg', 'js.jpg', 'load-balancer.png']}
-        />
-      </div>
-      <p>This Is Disabled Input</p>
-      <TextField
-        defaultValue="Disabled Input"
-        disabled
+      <Slider
+        banners={['cloud.jpg', 'dns-server.png', 'full-stack-web-development.jpg', 'js.jpg', 'load-balancer.png']}
       />
-      <p>A Valid Input</p>
-      <TextField
-        defaultValue="Valid Input"
-      />
-      <p>An Input With Errors</p>
-      <TextField
-        defaultValue="101"
-        error
-      />
-      <p style={{ color: 'red', fontSize: '12px' }}>Should be a Number</p>
+      <P>This Is Disabled Input</P>
+      <TextField defaultValue="Disabled Input" disabled />
+      <P>A Valid Input</P>
+      <TextField defaultValue="Valid Input" />
+      <P>An Input With Errors</P>
+      <TextField redBorder defaultValue="101" />
+      <P warn>Should be a Number</P>
     </div>
   );
 }
-
 export default TextFieldDemo;

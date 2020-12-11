@@ -1,20 +1,13 @@
 import React from 'react';
-import Style from './style';
+import { Input } from './style';
 
-const TextField = (Props) => {
-  const { input, highlight } = Style();
-  const { defaultValue, disabled, error } = Props;
-  let style;
-  if (error) {
-    style = { ...input, ...highlight };
-  } else {
-    style = { ...input };
-  }
+function TextField(prop) {
+  const { defaultValue, disabled, redBorder } = prop;
   return (
     <>
-      <input type="text" defaultValue={defaultValue} disabled={disabled} className="input" style={style} />
+      <Input type="text" defaultValue={defaultValue} disabled={disabled} redBorder={redBorder} />
     </>
   );
-};
+}
 
 export default TextField;

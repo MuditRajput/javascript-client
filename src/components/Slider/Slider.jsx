@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getRandomNumber, getNextRoundRobin } from '../lib/utils';
-import stylesheet from './style';
+import { Img } from './style';
 import { DEFAULT_BANNER_IMAGE, PUBLIC_IMAGE_FOLDER } from '../../configs/Constants';
 
 const Slider = (props) => {
@@ -23,15 +23,13 @@ const Slider = (props) => {
   } else {
     index = getNextRoundRobin(5, count);
   }
-  const { image } = stylesheet;
   const bannerImage = `${PUBLIC_IMAGE_FOLDER}${banners[index]}`;
   return (
     <>
-      <img
+      <Img
         src={bannerImage || defaultBanner}
         alt={altText}
         height={height}
-        style={image}
       />
     </>
   );

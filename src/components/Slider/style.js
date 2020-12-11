@@ -1,8 +1,6 @@
-const stylesheet = {
-  image: {
-    display: 'block',
-    margin: '10px auto',
-  },
-};
+import styled from 'styled-components';
 
-export default stylesheet;
+export const Img = styled.img`
+  margin: 0px auto;
+  display: block;
+`;
