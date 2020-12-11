@@ -1,27 +1,26 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { TextField } from '../../components';
+import { TextField, P } from '../../components';
 
 class TextFieldDemo extends Component {
   render() {
     return (
       <div id="root">
-        <p>This Is Disabled Input</p>
+        <P>This Is Disabled Input</P>
         <TextField
           defaultValue="Disabled Input"
           disabled
         />
-        <p>A Valid Input</p>
+        <P>A Valid Input</P>
         <TextField
           defaultValue="Valid Input"
-          error
         />
-        <p>An Input With Errors</p>
+        <P>An Input With Errors</P>
         <TextField
+          redBorder
           defaultValue="101"
-          error
         />
-        <p style={{ color: 'red', fontSize: '12px' }}>Should be a Number</p>
+        <P warn>Should be a Number</P>
       </div>
     );
   }
