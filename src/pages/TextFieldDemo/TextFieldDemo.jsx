@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, P, Slider } from '../../components';
+import { TextField, Slider } from '../../components';
 
 function TextFieldDemo() {
   return (
@@ -7,13 +7,12 @@ function TextFieldDemo() {
       <Slider
         banners={['cloud.jpg', 'dns-server.png', 'full-stack-web-development.jpg', 'js.jpg', 'load-balancer.png']}
       />
-      <P>This Is Disabled Input</P>
-      <TextField defaultValue="Disabled Input" disabled />
-      <P>A Valid Input</P>
-      <TextField defaultValue="Valid Input" />
-      <P>An Input With Errors</P>
-      <TextField redBorder defaultValue="101" />
-      <P warn>Should be a Number</P>
+      <p>This Is Disabled Input</p>
+      <TextField value="Disabled Input" disabled />
+      <p>A Valid Input</p>
+      <TextField value="Valid Input" />
+      <p>An Input With Errors</p>
+      <TextField value="101" error="Should be Number" />
     </div>
   );
 }
