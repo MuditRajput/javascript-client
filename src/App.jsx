@@ -1,11 +1,13 @@
 import React from 'react';
-import { InputDemo } from './pages';
+import { ChildrenDemo } from './pages';
+import { theme } from './theme';
 
 function App() {
+  const classes = theme();
   return (
-    <>
-      <InputDemo />
-    </>
+    <div className={classes.root}>
+      <ChildrenDemo />
+    </div>
   );
 }
 
