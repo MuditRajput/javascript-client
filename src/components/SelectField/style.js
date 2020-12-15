@@ -6,3 +6,8 @@ export const Select = styled.select`
   width: 100%;
   box-sizing: border-box;
 `;
+
+export const P = styled.p`
+  color: red;
+  font-size:12px;
+`;
