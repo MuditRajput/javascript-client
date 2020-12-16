@@ -9,7 +9,7 @@ const RadioGroup = (props) => {
         options.map(({ value, label }) => (
           <div key={label}>
             <input type="radio" id={label} value={value} onChange={onChange} error={error} />
-            <label htmlFor={label}>{label}</label>
+            {label}
           </div>
         ))
       }
@@ -20,11 +20,12 @@ const RadioGroup = (props) => {
 RadioGroup.propTypes = {
   error: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  options: PropTypes.array.isRequired,
+  options: PropTypes.array,
 };
 
 RadioGroup.defaultProps = {
   error: '',
+  options: [],
 };
 
 export default RadioGroup;

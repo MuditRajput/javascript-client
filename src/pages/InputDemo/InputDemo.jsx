@@ -18,9 +18,7 @@ function InputDemo() {
       ...state, sport: input.target.value, cricket: '', football: '',
     });
   };
-  const handleRadioGroup = (input) => (state.sport === cricket
-    ? setstate({ ...state, cricket: input.target.value })
-    : setstate({ ...state, football: input.target.value }));
+  const handleRadioGroup = (input) => ({ ...state, [state.sport]: input.target.value });
   useEffect(() => {
     console.log(state);
   });
@@ -43,7 +41,7 @@ function InputDemo() {
         onChange={handleSelectField}
       />
       {
-        (state.sport === cricket || state.sport === football)
+        (state.sport)
           ? <RadioGroup options={radioOptions()} onChange={handleRadioGroup} />
           : ''
       }
