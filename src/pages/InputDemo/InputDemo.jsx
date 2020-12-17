@@ -84,7 +84,7 @@ const InputDemo = () => {
   return (
     <div>
       <p>Name</p>
-      <TextField value="" onChange={handleTextField} onBlur={async () => handleBlur('name')} error={getError('name')} />
+      <TextField value="" onChange={handleTextField} onBlur={() => handleBlur('name')} error={getError('name')} />
       <p>Sport</p>
       <SelectField
         options={selectOptions}

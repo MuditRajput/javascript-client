@@ -1,13 +1,14 @@
 import React from 'react';
-import { ChildrenDemo } from './pages';
-import { theme } from './theme';
+import { ThemeProvider } from '@material-ui/core';
+import { TraineeComponent } from './pages';
+import { useStyle, theme } from './theme';
 
 function App() {
-  const classes = theme();
+  const classes = useStyle();
   return (
-    <div className={classes.root}>
-      <ChildrenDemo />
-    </div>
+    <ThemeProvider theme={theme} className={classes.root}>
+      <TraineeComponent />
+    </ThemeProvider>
   );
 }
 
