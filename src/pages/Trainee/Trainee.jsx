@@ -20,7 +20,7 @@ const TraineeComponent = () => {
 
   return (
     <div>
-      <Button size="large" variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
         Add Trainee
       </Button>
       <AddDialog
