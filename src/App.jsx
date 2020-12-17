@@ -1,13 +1,16 @@
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 import { ChildrenDemo } from './pages';
-import { theme } from './theme';
+import { theme, useStyle } from './theme';
 
 function App() {
-  const classes = theme();
+  const classes = useStyle();
   return (
-    <div className={classes.root}>
-      <ChildrenDemo />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className={classes.fontLarge}>
+        <ChildrenDemo />
+      </div>
+    </ThemeProvider>
   );
 }
 

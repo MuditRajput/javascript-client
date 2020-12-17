@@ -8,8 +8,7 @@ const MathDemo = () => (
       {
         (first, second, result) => (
           <p>
-            {`Sum of ${first} and ${second} is`}
-            {` ${result} `}
+            {`Sum of ${first} and ${second} is ${result}`}
           </p>
         )
       }
@@ -17,9 +16,8 @@ const MathDemo = () => (
     <Math first={1} second={0} operator="/">
       {
         (first, second, result) => (
-          <Typography variant="p">
-            {`When we divide ${first} with ${second} then ressult is`}
-            {` ${result} `}
+          <Typography>
+            {`When we divide ${first} with ${second} then result is ${result}`}
           </Typography>
         )
       }
