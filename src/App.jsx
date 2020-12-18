@@ -3,9 +3,7 @@ import { InputDemo } from './pages';
 
 function App() {
   return (
-    <>
-      <InputDemo />
-    </>
+    <InputDemo />
   );
 }
 
