@@ -28,8 +28,8 @@ const InputDemo = () => {
 
   const radioOptions = () => {
     const options = {
-      cricket: radioOptionsFootball,
-      football: radioOptionsCricket,
+      cricket: radioOptionsCricket,
+      football: radioOptionsFootball,
     };
     return options[state.sport];
   };
