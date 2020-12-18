@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, SelectField, RadioGroup } from '../../components';
 import {
-  selectOptions, radioOptionsCricket, radioOptionsFootball, cricket, football,
+  selectOptions, radioOptionsCricket, radioOptionsFootball,
 } from '../../configs/Constants';
 
-function InputDemo() {
+const InputDemo = () => {
   const [state, setstate] = useState({
     name: '', sport: '', cricket: '', football: '',
   });
@@ -18,20 +18,24 @@ function InputDemo() {
       ...state, sport: input.target.value, cricket: '', football: '',
     });
   };
-  const handleRadioGroup = (input) => ({ ...state, [state.sport]: input.target.value });
+  const handleRadioGroup = (input) => {
+    setstate({ ...state, [state.sport]: input.target.value });
+  };
+
   useEffect(() => {
     console.log(state);
   });
+
   const radioOptions = () => {
-    let option;
-    if (state.sport === football) {
-      option = radioOptionsFootball;
-    }
-    if (state.sport === cricket) {
-      option = radioOptionsCricket;
-    }
-    return option;
+    const options = {
+      cricket: radioOptionsFootball,
+      football: radioOptionsCricket,
+    };
+    return options[state.sport];
   };
+
+  const selectedSport = state[state.sport];
+
   return (
     <div>
       <p>Name</p>
@@ -42,10 +46,17 @@ function InputDemo() {
       />
       {
         (state.sport)
-          ? <RadioGroup options={radioOptions()} onChange={handleRadioGroup} />
+          ? (
+            <RadioGroup
+              options={radioOptions()}
+              onChange={handleRadioGroup}
+              value={selectedSport}
+            />
+          )
           : ''
       }
     </div>
   );
-}
+};
+
 export default InputDemo;

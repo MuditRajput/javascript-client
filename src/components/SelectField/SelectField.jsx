@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select } from './style';
 
-function TextField(props) {
+const SelectField = (props) => {
   const {
     options, onChange, defaultText,
   } = props;
@@ -16,16 +16,16 @@ function TextField(props) {
       </Select>
     </div>
   );
-}
+};
 
-TextField.defaultProps = {
+SelectField.defaultProps = {
   defaultText: 'select',
 };
 
-TextField.propTypes = {
+SelectField.propTypes = {
   defaultText: PropTypes.string,
   options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
 };
 
-export default TextField;
+export default SelectField;

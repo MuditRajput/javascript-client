@@ -39,7 +39,3 @@ export const radioOptionsFootball = [{
   value: 'Defender',
 },
 ];
-
-export const cricket = 'cricket';
-
-export const football = 'football';
