@@ -24,13 +24,13 @@ const NavBar = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            News
+            Trainee Portal
           </Typography>
-          <Button color="inherit">Trainee</Button>
-          <Button color="inherit">TEXTFIELD DEMO</Button>
-          <Button color="inherit">INPUT DEMO</Button>
-          <Button color="inherit">CHILDREN DEMO</Button>
-          <Button color="inherit">LOGOUt</Button>
+          <Button href="/" color="inherit">Trainee</Button>
+          <Button href="/text-field-demo" color="inherit">TEXTFIELD DEMO</Button>
+          <Button href="/input-demo" color="inherit">INPUT DEMO</Button>
+          <Button href="/children-demo" color="inherit">CHILDREN DEMO</Button>
+          <Button color="inherit">LOGOUT</Button>
         </Toolbar>
       </AppBar>
     </div>

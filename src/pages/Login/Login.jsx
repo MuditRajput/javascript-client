@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
-  Dialog, DialogContent, Typography, Button, TextField, InputAdornment, makeStyles,
+  Container, Typography, Button, TextField, InputAdornment, makeStyles,
 } from '@material-ui/core';
 import EmailIcon from '@material-ui/icons/Email';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -13,8 +12,11 @@ export const useStyle = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
+    padding: '40px 30px',
+    borderRadius: '4px',
+    border: '1px solid silver',
+    marginTop: theme.spacing(10),
+    boxSizing: 'border-box',
   },
   iconRound: {
     padding: '5px',
@@ -28,8 +30,7 @@ export const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const LoginUi = (props) => {
-  const { open } = props;
+const LoginUi = () => {
   const classes = useStyle();
   const schema = yup.object().shape({
     Email: yup.string().required('Email is required').email(),
@@ -89,12 +90,11 @@ const LoginUi = (props) => {
   };
 
   return (
-    <Dialog
-      open={open}
+    <Container
       fullWidth
       maxWidth="xs"
     >
-      <DialogContent className={classes.flexcolumnCenter}>
+      <div className={classes.flexcolumnCenter}>
         <LockOutlinedIcon className={classes.iconRound} />
         <Typography variant="h5">
           Login
@@ -135,17 +135,9 @@ const LoginUi = (props) => {
             Login
           </Button>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Container>
   );
-};
-
-LoginUi.propTypes = {
-  open: PropTypes.bool,
-};
-
-LoginUi.defaultProps = {
-  open: true,
 };
 
 export default LoginUi;
