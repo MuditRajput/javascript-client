@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import trainees from './data/Trainee';
-import { AddDialog } from './Components';
+import { AddDialog, TableComponent } from './Components';
 
 const TraineeList = (props) => {
   const { match: { path } } = props;
@@ -27,6 +27,21 @@ const TraineeList = (props) => {
       <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
         Add Trainee
       </Button>
+      <TableComponent
+        id="id"
+        data={trainees}
+        columns={[
+          {
+            field: 'name',
+            label: 'Name',
+            align: 'center',
+          },
+          {
+            field: 'email',
+            label: 'Email Address',
+          },
+        ]}
+      />
       <AddDialog
         open={open}
         onClose={handleClose}
