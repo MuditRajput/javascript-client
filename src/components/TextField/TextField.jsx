@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Input, P } from './style';
 
-function TextField(props) {
+const TextField = (props) => {
   const {
     value, disabled, onChange, error, onBlur,
   } = props;
@@ -12,7 +12,7 @@ function TextField(props) {
       <P>{error}</P>
     </>
   );
-}
+};
 
 TextField.defaultProps = {
   disabled: false,

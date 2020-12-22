@@ -4,15 +4,15 @@ import {
   TextField, SelectField, RadioGroup, Button,
 } from '../../components';
 import {
-  selectOptions, radioOptionsCricket, radioOptionsFootball, cricket, football,
+  selectOptions, radioOptionsCricket, radioOptionsFootball,
 } from '../../configs/Constants';
 
 const InputDemo = () => {
   const schema = yup.object().shape({
     name: yup.string().required('name is required').min(3, 'should have more then 3 characters'),
     sport: yup.string().required('sport is required'),
-    cricket: yup.string().when('sport', { is: cricket, then: yup.string().required('required') }),
-    football: yup.string().when('sport', { is: football, then: yup.string().required('required') }),
+    cricket: yup.string().when('sport', { is: 'cricket', then: yup.string().required('required') }),
+    football: yup.string().when('sport', { is: 'football', then: yup.string().required('required') }),
   });
   const [state, setstate] = useState({
     name: '', sport: '', cricket: '', football: '',
@@ -57,9 +57,10 @@ const InputDemo = () => {
       ...state, sport: input.target.value, cricket: '', football: '',
     });
   };
-  const handleRadioGroup = (input) => (state.sport === cricket
-    ? setstate({ ...state, cricket: input.target.value })
-    : setstate({ ...state, football: input.target.value }));
+  const handleRadioGroup = (input) => {
+    setstate({ ...state, [state.sport]: input.target.value });
+  };
+
   useEffect(() => {
     console.log(state);
     console.log(onBlur);
@@ -72,15 +73,15 @@ const InputDemo = () => {
   };
 
   const radioOptions = () => {
-    let option;
-    if (state.sport === football) {
-      option = radioOptionsFootball;
-    }
-    if (state.sport === cricket) {
-      option = radioOptionsCricket;
-    }
-    return option;
+    const options = {
+      cricket: radioOptionsCricket,
+      football: radioOptionsFootball,
+    };
+    return options[state.sport];
   };
+
+  const selectedSport = state[state.sport];
+
   return (
     <div>
       <p>Name</p>
@@ -93,11 +94,11 @@ const InputDemo = () => {
         error={getError('sport')}
       />
       {
-        (state.sport === cricket || state.sport === football)
+        (state.sport)
           ? (
             <>
               <p>What You Do?</p>
-              <RadioGroup options={radioOptions()} onChange={handleRadioGroup} onBlur={() => handleBlur(`${state.sport}`)} error={getError(`${state.sport}`)} />
+              <RadioGroup value={selectedSport} options={radioOptions()} onChange={handleRadioGroup} onBlur={() => handleBlur(`${state.sport}`)} error={getError(`${state.sport}`)} />
             </>
           )
           : ''
@@ -114,4 +115,5 @@ const InputDemo = () => {
     </div>
   );
 };
+
 export default InputDemo;
