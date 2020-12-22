@@ -11,16 +11,14 @@ const NoMatch = () => {
   const classes = useStyles();
   return (
     <>
-      <Typography align="center" className={classes.Spacing}>
-        <Typography variant="h3" color="secondary" display="inline">
+      <Typography align="center" className={classes.Spacing} component="div">
+        <Typography variant="h3" color="secondary" display="inline" component="span">
           N
           <Typography variant="h4" display="inline">OT </Typography>
         </Typography>
-        <Typography variant="h3" color="primary" display="inline">
+        <Typography variant="h3" color="primary" display="inline" component="span">
           F
-          <Typography variant="h4" display="inline">
-            OUND
-          </Typography>
+          <Typography variant="h4" display="inline">OUND</Typography>
         </Typography>
         <Typography variant="body2" align="center" color="textSecondary">
           Seems like the page you are searching for does not exist.
