@@ -1,17 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
+import moment from 'moment';
 import trainees from './data/Trainee';
-import { AddDialog, TableComponent } from './Components';
+import { AddDialog } from './Components';
+import { TableComponent } from '../../components';
 
 const TraineeList = (props) => {
-  const { match: { path } } = props;
+  const { match, history } = props;
   const [open, setOpen] = React.useState(false);
+  const [order, setOrder] = React.useState();
+  const [orderBy, setOrderBy] = React.useState();
+
+  const handleSort = (property) => {
+    setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSelect = (property) => {
+    history.push(`${match.path}/${property}`);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
 
   const handleClose = () => {
     setOpen(false);
@@ -34,34 +48,35 @@ const TraineeList = (props) => {
           {
             field: 'name',
             label: 'Name',
-            align: 'center',
           },
           {
             field: 'email',
             label: 'Email Address',
+            format: (value) => value && value.toUpperCase(),
+          },
+          {
+            field: 'createdAt',
+            label: 'Date',
+            align: 'right',
+            format: getDateFormatted,
           },
         ]}
+        order={order}
+        orderBy={orderBy}
+        onSort={handleSort}
+        onSelect={handleSelect}
       />
       <AddDialog
         open={open}
         onClose={handleClose}
         onSubmit={handleSubmit}
       />
-      <ul>
-        {
-          trainees.map(({ name, id }) => (
-            <li key={name}>
-              <Link to={`${path}/${id}`}>{name}</Link>
-            </li>
-          ))
-        }
-      </ul>
     </>
   );
 };
 
 TraineeList.propTypes = {
   match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
-
 export default TraineeList;
