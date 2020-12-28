@@ -12,9 +12,6 @@ export const useStyle = makeStyles(() => ({
   margin: {
     margin: '10px 0',
   },
-  color: {
-    primary: '#2540c1',
-  },
 }));
 
 const EditDialog = (props) => {

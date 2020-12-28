@@ -13,9 +13,6 @@ export const useStyle = makeStyles(() => ({
   margin: {
     margin: '10px 0',
   },
-  color: {
-    primary: '#2540c1',
-  },
   flexRow: {
     display: 'flex',
     alignContent: 'space-between',
