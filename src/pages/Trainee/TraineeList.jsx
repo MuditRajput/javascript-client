@@ -7,16 +7,21 @@ import moment from 'moment';
 import trainees from './data/Trainee';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent } from '../../components';
+import { SnackBarProvider } from '../../contexts';
 
 const TraineeList = (props) => {
   const { match, history } = props;
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
   const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [order, setOrder] = React.useState();
   const [orderBy, setOrderBy] = React.useState();
   const [page, setPage] = React.useState(0);
   const [details, setDetails] = React.useState({});
+  const [snackValues, setSnackValues] = React.useState({
+    status: '', message: '',
+  });
 
   const handleSort = (property) => {
     setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
@@ -40,6 +45,8 @@ const TraineeList = (props) => {
   };
 
   const handleSubmit = (state) => {
+    setSnackValues({ status: 'success', message: 'Trainee Added Successfully' });
+    setSnackbarOpen(true);
     setOpen(false);
     console.log(state);
   };
@@ -61,6 +68,8 @@ const TraineeList = (props) => {
   };
 
   const handleEditDialogSubmit = (state) => {
+    setSnackValues({ status: 'success', message: 'Trainee Updated Successfully' });
+    setSnackbarOpen(true);
     setEditOpen(false);
     console.log(state);
   };
@@ -69,7 +78,17 @@ const TraineeList = (props) => {
     setDeleteOpen(false);
   };
 
+  const snackBarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const handleDelete = () => {
+    if (details.createdAt >= '2019-02-14') {
+      setSnackValues({ status: 'success', message: 'Trainee Deleted Successfully' });
+    } else {
+      setSnackValues({ status: 'error', message: 'Trainee cannot be Deleted' });
+    }
+    setSnackbarOpen(true);
     setDeleteOpen(false);
     console.log(details);
   };
@@ -134,6 +153,12 @@ const TraineeList = (props) => {
         open={deleteOpen}
         onClose={handleDeleteClose}
         onDelete={handleDelete}
+      />
+      <SnackBarProvider
+        open={snackbarOpen}
+        status={snackValues.status}
+        message={snackValues.message}
+        onClose={snackBarClose}
       />
     </>
   );
