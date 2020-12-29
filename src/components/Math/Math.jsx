@@ -20,10 +20,7 @@ const MathFunction = (props) => {
   }
   return (
     <p>
-      {`Result of ${first} and ${second} is `}
-      {
-        getResult(first, second, operator)
-      }
+      {`Result of ${first} ${operator} ${second} is ${getResult(first, second, operator)}`}
     </p>
   );
 };

@@ -4,7 +4,7 @@ import { P } from './style';
 
 const RadioGroup = (props) => {
   const {
-    error, onChange, options, onBlur, value: selectedValue,
+    error, onChange, options, value: selectedValue, onBlur,
   } = props;
   return (
     <>

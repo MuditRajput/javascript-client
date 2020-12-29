@@ -9,11 +9,11 @@ function TextFieldDemo() {
         banners={Banners}
       />
       <p>This Is Disabled Input</p>
-      <TextField value="Disabled Input" disabled />
+      <TextField defaultValue="Disabled Input" disabled />
       <p>A Valid Input</p>
-      <TextField value="Valid Input" />
+      <TextField defaultValue="Valid Input" />
       <p>An Input With Errors</p>
-      <TextField value="101" error="Should be Number" />
+      <TextField defaultValue="101" error="Should be Number" />
     </div>
   );
 }

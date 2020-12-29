@@ -17,46 +17,57 @@ const InputDemo = () => {
   const [state, setstate] = useState({
     name: '', sport: '', cricket: '', football: '',
   });
+
   const [onBlur, setBlur] = useState({
     name: false, sport: false, cricket: false, football: false,
   });
+
+  const [schemaErrors, setSchemaErrors] = useState({});
+
+  const handleErrors = (errors) => {
+    const schemaError = {};
+    if (errors) {
+      errors.inner.forEach((error) => {
+        schemaError[error.path] = error.message;
+      });
+    }
+    setSchemaErrors(schemaError);
+  };
+
+  const handleValidate = () => {
+    schema.validate(state, { abortEarly: false })
+      .then(() => { handleErrors(null); })
+      .catch((err) => { handleErrors(err); });
+  };
+
   const handleBlur = (label) => {
+    handleValidate();
     setBlur({ ...onBlur, [label]: true });
   };
-  const isTouched = () => {
-    if (onBlur.name || onBlur.sport || onBlur.cricket || onBlur.football) {
-      return true;
-    }
-    return false;
-  };
-  const hasErrors = () => {
-    try {
-      schema.validateSync(state);
-    } catch (err) {
-      return true;
-    }
-    return false;
-  };
+
   const getError = (label) => {
-    if (onBlur[label] && hasErrors()) {
-      try {
-        schema.validateSyncAt(label, state);
-      } catch (err) {
-        return err.message;
-      }
+    if (onBlur[label]) {
+      return schemaErrors[label] || '';
     }
     return null;
   };
+
+  const hasErrors = () => Object.keys(schemaErrors).length !== 0;
+
+  const isTouched = () => (onBlur.name || onBlur.sport || onBlur.cricket || onBlur.football);
+
   const handleTextField = (input) => {
     setstate({
       ...state, name: input.target.value,
     });
   };
+
   const handleSelectField = (input) => {
     setstate({
       ...state, sport: input.target.value, cricket: '', football: '',
     });
   };
+
   const handleRadioGroup = (input) => {
     setstate({ ...state, [state.sport]: input.target.value });
   };
@@ -65,6 +76,10 @@ const InputDemo = () => {
     console.log(state);
     console.log(onBlur);
   });
+
+  const onSubmit = () => {
+    console.log(state);
+  };
 
   const resetState = () => {
     setstate({
@@ -85,7 +100,7 @@ const InputDemo = () => {
   return (
     <div>
       <p>Name</p>
-      <TextField value="" onChange={handleTextField} onBlur={async () => handleBlur('name')} error={getError('name')} />
+      <TextField value="" onChange={handleTextField} onBlur={() => handleBlur('name')} error={getError('name')} />
       <p>Sport</p>
       <SelectField
         options={selectOptions}
@@ -109,6 +124,7 @@ const InputDemo = () => {
       />
       <Button
         value="Submit"
+        onClick={onSubmit}
         disabled={!isTouched() || hasErrors()}
         colored={!(!isTouched() || hasErrors())}
       />
