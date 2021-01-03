@@ -7,21 +7,17 @@ import moment from 'moment';
 import trainees from './data/Trainee';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent } from '../../components';
-import { SnackBarProvider } from '../../contexts';
+import { SnackbarContext } from '../../contexts';
 
 const TraineeList = (props) => {
   const { match, history } = props;
   const [open, setOpen] = React.useState(false);
   const [editOpen, setEditOpen] = React.useState(false);
   const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [order, setOrder] = React.useState();
   const [orderBy, setOrderBy] = React.useState();
   const [page, setPage] = React.useState(0);
   const [details, setDetails] = React.useState({});
-  const [snackValues, setSnackValues] = React.useState({
-    status: '', message: '',
-  });
 
   const handleSort = (property) => {
     setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
@@ -44,9 +40,8 @@ const TraineeList = (props) => {
     setPage(newPage);
   };
 
-  const handleSubmit = (state) => {
-    setSnackValues({ status: 'success', message: 'Trainee Added Successfully' });
-    setSnackbarOpen(true);
+  const handleSubmit = (openSnackbar, state) => {
+    openSnackbar('success', 'Trainee Created Successfully');
     setOpen(false);
     console.log(state);
   };
@@ -67,9 +62,8 @@ const TraineeList = (props) => {
     setEditOpen(false);
   };
 
-  const handleEditDialogSubmit = (state) => {
-    setSnackValues({ status: 'success', message: 'Trainee Updated Successfully' });
-    setSnackbarOpen(true);
+  const handleEditDialogSubmit = (openSnackbar, state) => {
+    openSnackbar('success', 'Trainee Updated Successfully');
     setEditOpen(false);
     console.log(state);
   };
@@ -78,89 +72,82 @@ const TraineeList = (props) => {
     setDeleteOpen(false);
   };
 
-  const snackBarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  const handleDelete = () => {
+  const handleDelete = (openSnackbar) => {
     if (details.createdAt >= '2019-02-14') {
-      setSnackValues({ status: 'success', message: 'Trainee Deleted Successfully' });
+      openSnackbar('success', 'Trainee Deleted Successfully');
     } else {
-      setSnackValues({ status: 'error', message: 'Trainee cannot be Deleted' });
+      openSnackbar('error', 'Trainee cannot be Deleted');
     }
-    setSnackbarOpen(true);
     setDeleteOpen(false);
     console.log(details);
   };
 
   return (
-    <>
-      <CssBaseline />
-      <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
-        Add Trainee
-      </Button>
-      <TableComponent
-        id="id"
-        data={trainees}
-        columns={[
-          {
-            field: 'name',
-            label: 'Name',
-          },
-          {
-            field: 'email',
-            label: 'Email Address',
-            format: (value) => value && value.toUpperCase(),
-          },
-          {
-            field: 'createdAt',
-            label: 'Date',
-            align: 'right',
-            format: getDateFormatted,
-          },
-        ]}
-        actions={[
-          {
-            icon: <EditIcon />,
-            handler: handleEditDialogOpen,
-          },
-          {
-            icon: <DeleteIcon />,
-            handler: handleDeleteDialogOpen,
-          },
-        ]}
-        order={order}
-        orderBy={orderBy}
-        onSort={handleSort}
-        onSelect={handleSelect}
-        page={page}
-        onChangePage={handleChangePage}
-        count={100}
-        rowsPerPage={5}
-      />
-      <AddDialog
-        open={open}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-      />
-      <EditDialog
-        open={editOpen}
-        onClose={handleEditDialogClose}
-        onSubmit={handleEditDialogSubmit}
-        defaultValues={details}
-      />
-      <DeleteDialog
-        open={deleteOpen}
-        onClose={handleDeleteClose}
-        onDelete={handleDelete}
-      />
-      <SnackBarProvider
-        open={snackbarOpen}
-        status={snackValues.status}
-        message={snackValues.message}
-        onClose={snackBarClose}
-      />
-    </>
+    <SnackbarContext.Consumer>
+      {({ openSnackbar }) => (
+        <>
+          <CssBaseline />
+          <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+            Add Trainee
+          </Button>
+          <TableComponent
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormatted,
+              },
+            ]}
+            actions={[
+              {
+                icon: <EditIcon />,
+                handler: handleEditDialogOpen,
+              },
+              {
+                icon: <DeleteIcon />,
+                handler: handleDeleteDialogOpen,
+              },
+            ]}
+            order={order}
+            orderBy={orderBy}
+            onSort={handleSort}
+            onSelect={handleSelect}
+            page={page}
+            onChangePage={handleChangePage}
+            count={100}
+            rowsPerPage={5}
+          />
+          <AddDialog
+            open={open}
+            onClose={handleClose}
+            onSubmit={(state) => handleSubmit(openSnackbar, state)}
+          />
+          <EditDialog
+            open={editOpen}
+            onClose={handleEditDialogClose}
+            onSubmit={(state) => handleEditDialogSubmit(openSnackbar, state)}
+            defaultValues={details}
+          />
+          <DeleteDialog
+            open={deleteOpen}
+            onClose={handleDeleteClose}
+            onDelete={() => handleDelete(openSnackbar)}
+          />
+        </>
+      )}
+    </SnackbarContext.Consumer>
   );
 };
 

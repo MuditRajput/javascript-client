@@ -1,30 +1,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Snackbar } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
+import SnackBar from './SnackBar';
+
+export const SnackbarContext = React.createContext();
 
 const SnackBarProvider = (props) => {
-  const {
-    open, status, message, onClose,
-  } = props;
+  const { children } = props;
+  const [snackValues, setSnackValues] = React.useState({
+    status: '', message: '', open: false,
+  });
+
+  const openSnackBar = (status, message) => {
+    setSnackValues({
+      status,
+      message,
+      open: true,
+    });
+  };
+
+  const snackBarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackValues({ open: false });
+  };
+
   return (
-    <Snackbar open={open} autoHideDuration={1000} onClose={onClose}>
-      <MuiAlert severity={status}>
-        {message}
-      </MuiAlert>
-    </Snackbar>
+    <>
+      <SnackbarContext.Provider
+        value={{
+          openSnackbar: openSnackBar,
+        }}
+      >
+        {children}
+      </SnackbarContext.Provider>
+      <SnackBar
+        duration={3000}
+        open={snackValues.open}
+        onClose={snackBarClose}
+        message={snackValues.message}
+        status={snackValues.status}
+      />
+    </>
   );
 };
 
 SnackBarProvider.propTypes = {
-  open: PropTypes.bool,
-  status: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
-
-SnackBarProvider.defaultProps = {
-  open: false,
+  children: PropTypes.node.isRequired,
 };
 
 export default SnackBarProvider;
