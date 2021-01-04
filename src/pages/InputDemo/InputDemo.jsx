@@ -14,7 +14,6 @@ const InputDemo = () => {
     cricket: yup.string().when('sport', { is: 'cricket', then: yup.string().required('What you do is required') }),
     football: yup.string().when('sport', { is: 'football', then: yup.string().required('What you do is required') }),
   });
-
   const [state, setstate] = useState({
     name: '', sport: '', cricket: '', football: '',
   });
@@ -112,14 +111,16 @@ const InputDemo = () => {
         onBlur={() => handleBlur('sport')}
         error={getError('sport')}
       />
-      { (state.sport)
-        ? (
-          <>
-            <p>What You Do?</p>
-            <RadioGroup options={radioOptions()} onChange={handleRadioGroup} value={selectedSport} onBlur={() => handleBlur(`${state.sport}`)} error={getError(`${state.sport}`)} />
-          </>
-        )
-        : ''}
+      {
+        (state.sport)
+          ? (
+            <>
+              <p>What You Do?</p>
+              <RadioGroup value={selectedSport} options={radioOptions()} onChange={handleRadioGroup} onBlur={() => handleBlur(`${state.sport}`)} error={getError(`${state.sport}`)} />
+            </>
+          )
+          : ''
+      }
       <Button
         value="Cancel"
         onClick={resetState}
