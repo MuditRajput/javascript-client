@@ -42,7 +42,6 @@ const InputDemo = () => {
   };
 
   const handleBlur = (label) => {
-    handleValidate();
     setBlur({ ...onBlur, [label]: true });
   };
 
@@ -64,6 +63,12 @@ const InputDemo = () => {
   };
 
   const handleSelectField = (input) => {
+    if (input.target.value === 'select') {
+      setstate({
+        ...state, sport: '', cricket: '', football: '',
+      });
+      return;
+    }
     setstate({
       ...state, sport: input.target.value, cricket: '', football: '',
     });
@@ -75,8 +80,9 @@ const InputDemo = () => {
 
   useEffect(() => {
     console.log(state);
+    handleValidate();
     console.log(onBlur);
-  });
+  }, [state]);
 
   const onSubmit = () => {
     console.log(state);
