@@ -1,11 +1,11 @@
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
-export const theme = createMuiTheme({
+const theme = createMuiTheme({
   palette: {
     primary: {
-      light: '#7cb446',
-      main: '#4b8414',
-      dark: '#185700',
+      light: '#8564a4',
+      main: '#573975',
+      dark: '#2b1149',
       contrastText: '#fff',
     },
     secondary: {
@@ -21,23 +21,8 @@ export const theme = createMuiTheme({
       'cursive',
       'sans-serif',
     ],
-    fontSize: 20,
+    fontSize: 13,
   },
 });
 
-export const useStyle = makeStyles(() => ({
-  margin: {
-    margin: '10px 0',
-  },
-  color: {
-    primary: '#2540c1',
-  },
-  flexRow: {
-    display: 'flex',
-    alignContent: 'space-between',
-    margin: '10px 0',
-  },
-  flexElements: {
-    marginLeft: '15px',
-  },
-}));
+export default theme;

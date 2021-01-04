@@ -4,11 +4,28 @@ import {
   DialogActions, Dialog, DialogContentText, DialogContent,
   DialogTitle, Button, TextField, InputAdornment,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EmailIcon from '@material-ui/icons/Email';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import * as yup from 'yup';
-import { useStyle } from '../../../../theme';
+
+export const useStyle = makeStyles(() => ({
+  margin: {
+    margin: '10px 0',
+  },
+  color: {
+    primary: '#2540c1',
+  },
+  flexRow: {
+    display: 'flex',
+    alignContent: 'space-between',
+    margin: '10px 0',
+  },
+  flexElements: {
+    marginLeft: '15px',
+  },
+}));
 
 const TraineeComponent = (props) => {
   const { open, onClose, onSubmit } = props;
@@ -17,42 +34,51 @@ const TraineeComponent = (props) => {
     Name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
     Email: yup.string().required('Email is required').email(),
     Password: yup.string().required('Password is required').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character'),
-    Confirm: yup.string().required('Required').oneOf([yup.ref('Password'), null], 'Confirm Password is different'),
+    Confirm: yup.string().required('Required').oneOf([yup.ref('Password'), ''], 'Confirm Password is different'),
   });
 
   const [state, setstate] = useState({
     Name: '', Email: '', Password: '', Confirm: '',
   });
 
-  const [onBlur, setBlur] = useState({
-    Name: false, Email: false, Password: false, Confirm: false,
-  });
+  const [onBlur, setBlur] = useState({});
+
+  const [schemaErrors, setSchemaErrors] = useState({});
+
+  const handleErrors = (errors) => {
+    const schemaError = {};
+    if (Object.keys(errors).length) {
+      errors.inner.forEach((error) => {
+        schemaError[error.path] = error.message;
+      });
+    }
+    setSchemaErrors(schemaError);
+  };
+
+  const handleValidate = () => {
+    schema.validate(state, { abortEarly: false })
+      .then(() => { handleErrors({}); })
+      .catch((err) => { handleErrors(err); });
+  };
 
   const handleBlur = (label) => {
     setBlur({ ...onBlur, [label]: true });
   };
 
-  const isTouched = () => (onBlur.Name || onBlur.Email || onBlur.Password || onBlur.Confirm);
-
-  const hasErrors = () => {
-    try {
-      schema.validateSync(state);
-    } catch (err) {
-      return true;
-    }
-    return false;
-  };
-
   const getError = (label) => {
-    if (onBlur[label] && hasErrors()) {
-      try {
-        schema.validateSyncAt(label, state);
-      } catch (err) {
-        return err.message;
-      }
+    if (onBlur[label]) {
+      return schemaErrors[label] || '';
     }
-    return null;
+    return '';
   };
+
+  React.useEffect(() => {
+    handleValidate();
+  }, [state]);
+
+  const hasErrors = () => Object.keys(schemaErrors).length !== 0;
+
+  const isTouched = () => Object.keys(onBlur).length !== 0;
 
   const handleNameField = (input) => {
     setstate({

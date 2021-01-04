@@ -19,7 +19,7 @@ const TraineeComponent = () => {
   };
 
   return (
-    <div>
+    <>
       <Button size="large" variant="contained" color="primary" onClick={handleClickOpen}>
         Add Trainee
       </Button>
@@ -28,7 +28,7 @@ const TraineeComponent = () => {
         onClose={handleClose}
         onSubmit={handleSubmit}
       />
-    </div>
+    </>
   );
 };
 
