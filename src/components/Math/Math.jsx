@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 const getResult = (first, second, operator) => {
   let result;
-  if (!(operator === '+' || operator === '-' || operator === '*' || operator === '/')) {
-    result = 'invalid operator';
+  if (!['+', '-', '*', '/'].includes(operator)) {
+    result = 'invalid operation';
   } else {
     result = eval(`${first} ${operator} ${second}`);
   }
@@ -16,7 +16,7 @@ const MathFunction = (props) => {
     first, second, operator, children,
   } = props;
   if (children) {
-    return children(first, second, getResult(first, second, operator), operator);
+    return children(first, second, getResult(first, second, operator));
   }
   return (
     <p>
