@@ -11,23 +11,21 @@ const InputDemo = () => {
   const schema = yup.object().shape({
     name: yup.string().required('name is required').min(3, 'should have more then 3 characters'),
     sport: yup.string().required('sport is required'),
-    cricket: yup.string().when('sport', { is: 'cricket', then: yup.string().required('required') }),
-    football: yup.string().when('sport', { is: 'football', then: yup.string().required('required') }),
+    cricket: yup.string().when('sport', { is: 'cricket', then: yup.string().required('What you do is required') }),
+    football: yup.string().when('sport', { is: 'football', then: yup.string().required('What you do is required') }),
   });
 
   const [state, setstate] = useState({
     name: '', sport: '', cricket: '', football: '',
   });
 
-  const [onBlur, setBlur] = useState({
-    name: false, sport: false, cricket: false, football: false,
-  });
+  const [onBlur, setBlur] = useState({});
 
   const [schemaErrors, setSchemaErrors] = useState({});
 
   const handleErrors = (errors) => {
     const schemaError = {};
-    if (errors) {
+    if (Object.keys(errors).length) {
       errors.inner.forEach((error) => {
         schemaError[error.path] = error.message;
       });
@@ -37,7 +35,7 @@ const InputDemo = () => {
 
   const handleValidate = () => {
     schema.validate(state, { abortEarly: false })
-      .then(() => { handleErrors(null); })
+      .then(() => { handleErrors({}); })
       .catch((err) => { handleErrors(err); });
   };
 
@@ -49,12 +47,12 @@ const InputDemo = () => {
     if (onBlur[label]) {
       return schemaErrors[label] || '';
     }
-    return null;
+    return '';
   };
 
   const hasErrors = () => Object.keys(schemaErrors).length !== 0;
 
-  const isTouched = () => (onBlur.name || onBlur.sport || onBlur.cricket || onBlur.football);
+  const isTouched = () => Object.keys(onBlur).length !== 0;
 
   const handleTextField = (input) => {
     setstate({
@@ -79,9 +77,8 @@ const InputDemo = () => {
   };
 
   useEffect(() => {
-    console.log(state);
+    console.log(state, onBlur);
     handleValidate();
-    console.log(onBlur);
   }, [state]);
 
   const onSubmit = () => {
