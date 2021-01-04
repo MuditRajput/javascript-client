@@ -5,29 +5,27 @@ import { Img } from './style';
 import { DEFAULT_BANNER_IMAGE, PUBLIC_IMAGE_FOLDER } from '../../configs/Constants';
 
 const Slider = (props) => {
-  const [count, setCount] = useState(0);
+  const [imageIndex, setCount] = useState(0);
   const {
     altText, banners, height, random, defaultBanner, duration,
   } = props;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const updatedCount = count + 1;
+      const updatedCount = imageIndex + 1;
       setCount(updatedCount);
     }, duration);
     return () => clearInterval(interval);
-  }, [count]);
-  let index;
-  if (random) {
-    index = getRandomNumber(5);
-  } else {
-    index = getNextRoundRobin(5, count);
-  }
-  const bannerImage = `${PUBLIC_IMAGE_FOLDER}${banners[index]}`;
+  }, [imageIndex]);
+  const index = random
+    ? getRandomNumber(banners.length)
+    : getNextRoundRobin(banners.length, imageIndex);
+  const bannerImage = banners.length ? `${PUBLIC_IMAGE_FOLDER}${banners[index]}` : `${PUBLIC_IMAGE_FOLDER}${defaultBanner}`;
+
   return (
     <>
       <Img
-        src={bannerImage || defaultBanner}
+        src={bannerImage}
         alt={altText}
         height={height}
       />

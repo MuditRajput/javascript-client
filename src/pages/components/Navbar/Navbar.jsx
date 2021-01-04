@@ -24,7 +24,7 @@ const NavBar = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            News
+            Trainee Portal
           </Typography>
           <Button color="inherit">Trainee</Button>
           <Button color="inherit">TEXTFIELD DEMO</Button>
