@@ -16,20 +16,28 @@ const useStyles = makeStyles((theme) => ({
 
 const PrivateRoute = () => {
   const classes = useStyles();
+  if (localStorage.getItem('token')) {
+    return (
+      <>
+        <PrivateLayout />
+        <div className={classes.navBody}>
+          <Switch>
+            <Redirect exact path="/" to="/trainee" />
+            <Route path="/trainee" render={(routerProps) => <TraineeComponent match={routerProps.match} history={routerProps.history} />} />
+            <Route exact path="/text-field-demo" component={TextFieldDemo} />
+            <Route exact path="/input-demo" component={InputDemo} />
+            <Route exact path="/children-demo" component={ChildrenDemo} />
+            <Redirect exact path="/logout" to="/login" />
+            <Route default component={NoMatch} />
+          </Switch>
+        </div>
+      </>
+    );
+  }
   return (
-    <>
-      <PrivateLayout />
-      <div className={classes.navBody}>
-        <Switch>
-          <Redirect exact path="/" to="/trainee" />
-          <Route path="/trainee" render={(routerProps) => <TraineeComponent match={routerProps.match} history={routerProps.history} />} />
-          <Route exact path="/text-field-demo" component={TextFieldDemo} />
-          <Route exact path="/input-demo" component={InputDemo} />
-          <Route exact path="/children-demo" component={ChildrenDemo} />
-          <Route default component={NoMatch} />
-        </Switch>
-      </div>
-    </>
+    <Switch>
+      <Redirect path="/" to="/login" />
+    </Switch>
   );
 };
 

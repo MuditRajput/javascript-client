@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getRandomNumber, getNextRoundRobin } from '../lib/utils';
+import { getRandomNumber, getNextRoundRobin } from '../../lib/utils';
 import { Img } from './style';
 import { DEFAULT_BANNER_IMAGE, PUBLIC_IMAGE_FOLDER } from '../../configs/Constants';
 
