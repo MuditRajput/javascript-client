@@ -5,12 +5,8 @@ import { AddDialog } from './Components';
 const TraineeComponent = () => {
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleClick = () => {
+    setOpen(!open);
   };
 
   const handleSubmit = (state) => {
@@ -20,12 +16,12 @@ const TraineeComponent = () => {
 
   return (
     <>
-      <Button size="large" variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button size="large" variant="contained" color="primary" onClick={handleClick}>
         Add Trainee
       </Button>
       <AddDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleClick}
         onSubmit={handleSubmit}
       />
     </>
