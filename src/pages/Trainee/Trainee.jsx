@@ -6,11 +6,7 @@ const TraineeComponent = () => {
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
-    if (open) {
-      setOpen(false);
-    } else {
-      setOpen(true);
-    }
+    setOpen(!open);
   };
 
   const handleSubmit = (state) => {
