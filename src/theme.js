@@ -1,6 +1,6 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-export const theme = createMuiTheme({
+const theme = createMuiTheme({
   palette: {
     primary: {
       light: '#8564a4',
@@ -17,10 +17,12 @@ export const theme = createMuiTheme({
   },
   typography: {
     fontFamily: [
-      'sans-serif',
-      'cursive',
       'Comic Sans MS',
+      'cursive',
+      'sans-serif',
     ],
-    fontSize: 16,
+    fontSize: 13,
   },
 });
+
+export default theme;
