@@ -17,9 +17,9 @@ const theme = createMuiTheme({
   },
   typography: {
     fontFamily: [
-      'Comic Sans MS',
-      'cursive',
       'sans-serif',
+      'cursive',
+      'Comic Sans MS',
     ],
     fontSize: 13,
   },
