@@ -23,8 +23,8 @@ TextField.defaultProps = {
 TextField.propTypes = {
   defaultValue: PropTypes.string,
   disabled: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
   error: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
   onBlur: PropTypes.func.isRequired,
 };
 

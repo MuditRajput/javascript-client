@@ -1,31 +1,23 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import { AddDialog } from './Components';
+import PropTypes from 'prop-types';
+import { Switch, Route } from 'react-router-dom';
+import TraineeList from './TraineeList';
+import TraineeDetail from './TraineeDetail';
 
-const TraineeComponent = () => {
-  const [open, setOpen] = React.useState(false);
+const TraineeComponent = ({ match, history }) => (
+  <>
+    <Switch>
+      <Route exact path={`${match.path}`}>
+        <TraineeList match={match} history={history} />
+      </Route>
+      <Route exact path={`${match.path}/:id`} render={(routerProps) => <TraineeDetail match={routerProps.match} />} />
+    </Switch>
+  </>
+);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
-  const handleSubmit = (state) => {
-    setOpen(false);
-    console.log(state);
-  };
-
-  return (
-    <>
-      <Button size="large" variant="contained" color="primary" onClick={handleClick}>
-        Add Trainee
-      </Button>
-      <AddDialog
-        open={open}
-        onClose={handleClick}
-        onSubmit={handleSubmit}
-      />
-    </>
-  );
+TraineeComponent.propTypes = {
+  match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default TraineeComponent;
