@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Select, P } from './style';
 
-function TextField(props) {
+const SelectField = (props) => {
   const {
     options, onChange, defaultText, onBlur, error,
   } = props;
   return (
     <div>
-      <Select name="Sport" onChange={onChange} onBlur={onBlur}>
+      <Select onChange={onChange} onBlur={onBlur}>
         <option>{defaultText}</option>
         {
           options.map(({ value, label }) => <option key={label}>{value}</option>)
@@ -17,14 +17,14 @@ function TextField(props) {
       <P>{error}</P>
     </div>
   );
-}
+};
 
-TextField.defaultProps = {
+SelectField.defaultProps = {
   defaultText: 'select',
   error: '',
 };
 
-TextField.propTypes = {
+SelectField.propTypes = {
   defaultText: PropTypes.string,
   error: PropTypes.string,
   options: PropTypes.array.isRequired,
@@ -32,4 +32,4 @@ TextField.propTypes = {
   onBlur: PropTypes.func.isRequired,
 };
 
-export default TextField;
+export default SelectField;
