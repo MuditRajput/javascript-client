@@ -18,14 +18,16 @@ TextField.defaultProps = {
   disabled: false,
   error: '',
   defaultValue: '',
+  onChange: () => {},
+  onBlur: () => {},
 };
 
 TextField.propTypes = {
   defaultValue: PropTypes.string,
   disabled: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   error: PropTypes.string,
-  onBlur: PropTypes.func.isRequired,
+  onBlur: PropTypes.func,
 };
 
 export default TextField;
