@@ -11,14 +11,14 @@ const NoMatch = () => {
   const classes = useStyles();
   return (
     <>
-      <Typography align="center" className={classes.Spacing}>
-        <Typography variant="h3" color="secondary" display="inline">
+      <Typography align="center" component="div" className={classes.Spacing}>
+        <Typography variant="h3" component="div" color="secondary" display="inline">
           N
-          <Typography variant="h4" display="inline">OT </Typography>
+          <Typography variant="h4" component="div" display="inline">OT </Typography>
         </Typography>
-        <Typography variant="h3" color="primary" display="inline">
+        <Typography variant="h3" component="div" color="primary" display="inline">
           F
-          <Typography variant="h4" display="inline">
+          <Typography variant="h4" component="div" display="inline">
             OUND
           </Typography>
         </Typography>

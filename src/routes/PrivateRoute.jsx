@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-  Route, Switch,
-} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import { PrivateLayout } from '../layouts';
-import {
-  ChildrenDemo, InputDemo, TextFieldDemo, TraineeComponent, NoMatch,
-} from '../pages';
 
 const useStyles = makeStyles((theme) => ({
   navBody: {
@@ -14,22 +10,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PrivateRoute = () => {
+const PrivateRoute = ({ component: Component, ...rest }) => {
   const classes = useStyles();
   return (
-    <>
-      <PrivateLayout />
-      <div className={classes.navBody}>
-        <Switch>
-          <Route exact path="/" component={TraineeComponent} />
-          <Route exact path="/text-field-demo" component={TextFieldDemo} />
-          <Route exact path="/input-demo" component={InputDemo} />
-          <Route exact path="/children-demo" component={ChildrenDemo} />
-          <Route default component={NoMatch} />
-        </Switch>
-      </div>
-    </>
+    <Route
+      {...rest}
+      render={(matchProps) => (
+        <PrivateLayout>
+          <div className={classes.navBody}>
+            <Component {...matchProps} />
+          </div>
+        </PrivateLayout>
+      )}
+    />
   );
+};
+
+PrivateRoute.propTypes = {
+  component: PropTypes.func.isRequired,
 };
 
 export default PrivateRoute;
