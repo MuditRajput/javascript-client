@@ -43,13 +43,16 @@ const TraineeList = (props) => {
   };
 
   const handleSubmit = async (openSnackbar, state) => {
+    setLoading(true);
     const response = await callApi('post', '/trainee', state);
     if (response.data) {
       const { data: { message } } = response;
-      setOpen(false);
       openSnackbar('success', message);
+      setOpen(false);
+      setLoading(false);
     } else {
       openSnackbar('error', 'Trainee Not Created');
+      setLoading(false);
     }
   };
 
@@ -75,11 +78,15 @@ const TraineeList = (props) => {
     console.log(state);
   };
 
+  const limit = 5;
+
   const getTrainee = () => {
-    callApi('get', '/trainee')
+    const skip = page * limit;
+    callApi('get', '/trainee', {}, { skip, limit })
       .then((response) => {
         const { data: { data: { UsersList, totalCount } } } = response;
         setTrainees({ Trainees: UsersList, TotalCount: totalCount });
+        localStorage.setItem('Trainees', JSON.stringify(UsersList));
         setLoading(false);
       })
       .catch(() => {
@@ -97,7 +104,7 @@ const TraineeList = (props) => {
   };
   useEffect(() => {
     getTrainee();
-  }, [open]);
+  }, [page]);
 
   const handleDelete = (openSnackbar) => {
     if (details.createdAt >= '2019-02-14') {
@@ -121,7 +128,7 @@ const TraineeList = (props) => {
             id="_id"
             data={trainees.Trainees}
             loader={loading}
-            dataLength={trainees.Trainees.length}
+            dataLength={trainees.TotalCount}
             columns={[
               {
                 field: 'name',
@@ -156,11 +163,12 @@ const TraineeList = (props) => {
             page={page}
             onChangePage={handleChangePage}
             count={trainees.TotalCount}
-            rowsPerPage={5}
+            rowsPerPage={limit}
 
           />
           <AddDialog
             open={open}
+            loading={loading}
             onClose={handleClose}
             onSubmit={(state) => handleSubmit(openSnackbar, state)}
           />

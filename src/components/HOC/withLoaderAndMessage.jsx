@@ -25,11 +25,12 @@ const withLoaderAndMessage = (WrappedComponent) => {
 
   WithLoaderAndMessage.propTypes = {
     loader: PropTypes.bool,
-    dataLength: PropTypes.number.isRequired,
+    dataLength: PropTypes.number,
   };
 
   WithLoaderAndMessage.defaultProps = {
     loader: false,
+    dataLength: 0,
   };
 
   return WithLoaderAndMessage;

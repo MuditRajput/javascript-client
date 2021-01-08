@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  DialogActions, Dialog, DialogContentText, DialogContent,
+  DialogActions, Dialog, DialogContentText, DialogContent, CircularProgress,
   DialogTitle, Button, TextField, InputAdornment, makeStyles,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -24,7 +24,9 @@ export const useStyle = makeStyles(() => ({
 }));
 
 const TraineeComponent = (props) => {
-  const { open, onClose, onSubmit } = props;
+  const {
+    open, onClose, onSubmit, loading,
+  } = props;
   const classes = useStyle();
   const schema = yup.object().shape({
     name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
@@ -161,8 +163,9 @@ const TraineeComponent = (props) => {
         <Button autoFocus onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button disabled={hasErrors() || !isTouched()} onClick={() => onSubmit(state)} color="primary">
+        <Button disabled={hasErrors() || !isTouched() || loading} onClick={() => onSubmit(state)} color="primary">
           Submit
+          { loading && <CircularProgress />}
         </Button>
       </DialogActions>
     </Dialog>
@@ -173,10 +176,12 @@ TraineeComponent.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
 };
 
 TraineeComponent.defaultProps = {
   open: false,
+  loading: false,
 };
 
 export default TraineeComponent;
