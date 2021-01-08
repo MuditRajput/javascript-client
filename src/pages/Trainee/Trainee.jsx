@@ -7,10 +7,8 @@ import TraineeDetail from './TraineeDetail';
 const TraineeComponent = ({ match }) => (
   <>
     <Switch>
-      <Route exact path={`${match.path}`}>
-        <TraineeList match={match} />
-      </Route>
-      <Route exact path={`${match.path}/:id`} render={(routerProps) => <TraineeDetail match={routerProps.match} />} />
+      <Route exact path={`${match.path}`} component={TraineeList} />
+      <Route exact path={`${match.path}/:id`} component={TraineeDetail} />
     </Switch>
   </>
 );
