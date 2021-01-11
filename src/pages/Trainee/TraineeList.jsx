@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import trainees from './data/Trainee';
-import { AddDialog, TableComponent } from './Components';
+import { AddDialog } from './Components';
+import { TableComponent } from '../../components';
 
 const TraineeList = (props) => {
   const { match: { path } } = props;
