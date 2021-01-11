@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  DialogActions, Dialog, DialogContentText, DialogContent,
+  DialogActions, Dialog, DialogContentText, DialogContent, CircularProgress,
   DialogTitle, Button, TextField, InputAdornment, makeStyles,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -16,8 +16,9 @@ export const useStyle = makeStyles(() => ({
 
 const EditDialog = (props) => {
   const {
-    open, onClose, onSubmit, defaultValues,
+    open, onClose, onSubmit, defaultValues, loading,
   } = props;
+  const { email, name } = defaultValues;
   const classes = useStyle();
   const schema = yup.object().shape({
     Name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
@@ -74,6 +75,7 @@ const EditDialog = (props) => {
     setBlur({ Name: false, Email: false });
     onClose();
   };
+
   const handleSubmit = (details) => {
     setBlur({ Name: false, Email: false });
     onSubmit(details);
@@ -99,7 +101,7 @@ const EditDialog = (props) => {
           error={!!getError('Name')}
           helperText={getError('Name')}
           className={classes.margin}
-          defaultValue={defaultValues.name}
+          defaultValue={name}
           onChange={handleNameField}
           onBlur={() => handleBlur('Name')}
           label="Name"
@@ -115,7 +117,7 @@ const EditDialog = (props) => {
           error={!!getError('Email')}
           helperText={getError('Email')}
           className={classes.margin}
-          defaultValue={defaultValues.email}
+          defaultValue={email}
           onChange={handleEmailField}
           onBlur={() => handleBlur('Email')}
           label="Email"
@@ -131,6 +133,7 @@ const EditDialog = (props) => {
         </Button>
         <Button disabled={hasErrors() || !isTouched()} onClick={() => handleSubmit(state)} color="primary">
           Submit
+          { loading && <CircularProgress />}
         </Button>
       </DialogActions>
     </Dialog>
@@ -142,11 +145,13 @@ EditDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.object,
+  loading: PropTypes.bool,
 };
 
 EditDialog.defaultProps = {
   open: false,
   defaultValues: {},
+  loading: false,
 };
 
 export default EditDialog;

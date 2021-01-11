@@ -72,10 +72,18 @@ const TraineeList = (props) => {
     setEditOpen(false);
   };
 
-  const handleEditDialogSubmit = (openSnackbar, state) => {
-    openSnackbar('success', 'Trainee Updated Successfully');
-    setEditOpen(false);
-    console.log(state);
+  const handleEditDialogSubmit = async (openSnackbar, state) => {
+    const updatedUser = { originalId: details.originalId, dataToUpdate: state };
+    const response = await callApi('put', '/trainee', updatedUser);
+    if (response.data) {
+      const { data: { message, status } } = response;
+      openSnackbar(status, message);
+      setLoading(false);
+      setEditOpen(false);
+    } else {
+      openSnackbar('error', 'Trainee Not Updated');
+      setLoading(false);
+    }
   };
 
   const limit = 5;
@@ -102,13 +110,24 @@ const TraineeList = (props) => {
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
+
   useEffect(() => {
     getTrainee();
   }, [page]);
 
-  const handleDelete = (openSnackbar) => {
+  const handleDelete = async (openSnackbar) => {
+    console.log(details);
     if (details.createdAt >= '2019-02-14') {
-      openSnackbar('success', 'Trainee Deleted Successfully');
+      const response = await callApi('delete', `trainee/${details.originalId}`);
+      if (response.data) {
+        const { data: { message, status } } = response;
+        openSnackbar(status, message);
+        setLoading(false);
+        setEditOpen(false);
+      } else {
+        openSnackbar('error', 'Trainee Not Deleted');
+        setLoading(false);
+      }
     } else {
       openSnackbar('error', 'Trainee cannot be Deleted');
     }
@@ -128,7 +147,7 @@ const TraineeList = (props) => {
             id="_id"
             data={trainees.Trainees}
             loader={loading}
-            dataLength={trainees.TotalCount}
+            dataLength={10}
             columns={[
               {
                 field: 'name',
@@ -174,12 +193,16 @@ const TraineeList = (props) => {
           />
           <EditDialog
             open={editOpen}
+            loading={loading}
             onClose={handleEditDialogClose}
-            onSubmit={(state) => handleEditDialogSubmit(openSnackbar, state)}
+            onSubmit={
+              (state) => handleEditDialogSubmit(openSnackbar, state)
+            }
             defaultValues={details}
           />
           <DeleteDialog
             open={deleteOpen}
+            loading={loading}
             onClose={handleDeleteClose}
             onDelete={() => handleDelete(openSnackbar)}
           />
