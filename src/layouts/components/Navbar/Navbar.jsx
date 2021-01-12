@@ -4,13 +4,12 @@ import {
 } from '@material-ui/core';
 import { NavLink } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
     marginBottom: '20px',
   },
   menuButton: {
-    marginRight: theme.spacing(2),
     color: 'white',
   },
   title: {
@@ -28,17 +27,17 @@ const NavBar = () => {
           <Typography variant="h6" className={classes.title}>
             Trainee Portal
           </Typography>
-          <NavLink to="/">
-            <Button className={classes.menuButton}>TRAINEE</Button>
+          <NavLink to="/trainee">
+            <Button className={classes.menuButton} color="textSecondary">TRAINEE</Button>
           </NavLink>
           <NavLink to="/text-field-demo">
-            <Button className={classes.menuButton}>TEXTFIELD DEMO</Button>
+            <Button className={classes.menuButton} color="textSecondary">TEXTFIELD DEMO</Button>
           </NavLink>
           <NavLink to="/input-demo">
-            <Button className={classes.menuButton}>INPUT DEMO</Button>
+            <Button className={classes.menuButton} color="textSecondary">INPUT DEMO</Button>
           </NavLink>
           <NavLink to="/children-demo">
-            <Button className={classes.menuButton}>CHILDREN DEMO</Button>
+            <Button className={classes.menuButton} color="textSecondary">CHILDREN DEMO</Button>
           </NavLink>
           <Button className={classes.menuButton} color="inherit">LOGOUT</Button>
         </Toolbar>
