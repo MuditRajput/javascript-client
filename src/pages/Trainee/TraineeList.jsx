@@ -7,7 +7,7 @@ import { AddDialog } from './Components';
 import { TableComponent } from '../../components';
 
 const TraineeList = (props) => {
-  const { match: { path } } = props;
+  const { match: { path = '' } = {} } = props;
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
