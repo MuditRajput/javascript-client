@@ -6,7 +6,7 @@ import trainees from './data/Trainee';
 import { AddDialog } from './Components';
 
 const TraineeList = (props) => {
-  const { match: { path } } = props;
+  const { match: { path = '' } = {} } = props;
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
