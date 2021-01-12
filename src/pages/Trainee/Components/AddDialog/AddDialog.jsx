@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   DialogActions, Dialog, DialogContentText, DialogContent,
@@ -30,68 +30,67 @@ const TraineeComponent = (props) => {
   const { open, onClose, onSubmit } = props;
   const classes = useStyle();
   const schema = yup.object().shape({
-    Name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
-    Email: yup.string().required('Email is required').email(),
-    Password: yup.string().required('Password is required').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character'),
-    Confirm: yup.string().required('Required').oneOf([yup.ref('Password'), null], 'Confirm Password is different'),
+    name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
+    email: yup.string().required('Email is required').email(),
+    password: yup.string().required('Password is required').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character'),
+    confirm: yup.string().required('Required').oneOf([yup.ref('password'), ''], 'Confirm Password is different'),
   });
 
   const [state, setstate] = useState({
-    Name: '', Email: '', Password: '', Confirm: '',
+    name: '', email: '', password: '', confirm: '',
   });
 
-  const [onBlur, setBlur] = useState({
-    Name: false, Email: false, Password: false, Confirm: false,
-  });
+  const [onBlur, setBlur] = useState({});
+
+  const [schemaErrors, setSchemaErrors] = useState({});
+
+  const handleErrors = (errors) => {
+    const schemaError = {};
+    if (Object.keys(errors).length) {
+      errors.inner.forEach((error) => {
+        schemaError[error.path] = error.message;
+      });
+    }
+    setSchemaErrors(schemaError);
+  };
+
+  const handleValidate = () => {
+    schema.validate(state, { abortEarly: false })
+      .then(() => { handleErrors({}); })
+      .catch((err) => { handleErrors(err); });
+  };
 
   const handleBlur = (label) => {
     setBlur({ ...onBlur, [label]: true });
   };
 
-  const isTouched = () => (onBlur.Name || onBlur.Email || onBlur.Password || onBlur.Confirm);
-
-  const hasErrors = () => {
-    try {
-      schema.validateSync(state);
-    } catch (err) {
-      return true;
-    }
-    return false;
-  };
-
   const getError = (label) => {
-    if (onBlur[label] && hasErrors()) {
-      try {
-        schema.validateSyncAt(label, state);
-      } catch (err) {
-        return err.message;
-      }
+    if (onBlur[label]) {
+      return schemaErrors[label] || '';
     }
-    return null;
+    return '';
   };
 
-  const handleNameField = (input) => {
+  useEffect(() => {
+    handleValidate();
+  }, [state]);
+
+  const hasErrors = () => Object.keys(schemaErrors).length !== 0;
+
+  const isTouched = () => Object.keys(onBlur).length !== 0;
+
+  const handleInputField = (label, input) => {
     setstate({
-      ...state, Name: input.target.value,
+      ...state, [label]: input.target.value,
     });
   };
 
-  const handleEmailField = (input) => {
+  const handleOnSubmit = () => {
+    onSubmit(state);
     setstate({
-      ...state, Email: input.target.value,
+      name: '', email: '', password: '', confirm: '',
     });
-  };
-
-  const handlePasswordField = (input) => {
-    setstate({
-      ...state, Password: input.target.value,
-    });
-  };
-
-  const handleConfirmField = (input) => {
-    setstate({
-      ...state, Confirm: input.target.value,
-    });
+    setBlur({});
   };
 
   return (
@@ -111,11 +110,11 @@ const TraineeComponent = (props) => {
         <TextField
           required
           fullWidth
-          error={!!getError('Name')}
-          helperText={getError('Name')}
+          error={!!getError('name')}
+          helperText={getError('name')}
           className={classes.margin}
-          onChange={handleNameField}
-          onBlur={() => handleBlur('Name')}
+          onChange={(input) => handleInputField('name', input)}
+          onBlur={() => handleBlur('name')}
           label="Name"
           id="outlined-start-adornment"
           InputProps={{
@@ -126,11 +125,11 @@ const TraineeComponent = (props) => {
         <TextField
           required
           fullWidth
-          error={!!getError('Email')}
-          helperText={getError('Email')}
+          error={!!getError('email')}
+          helperText={getError('email')}
           className={classes.margin}
-          onChange={handleEmailField}
-          onBlur={() => handleBlur('Email')}
+          onChange={(input) => handleInputField('email', input)}
+          onBlur={() => handleBlur('email')}
           label="Email"
           InputProps={{
             startAdornment: <InputAdornment position="start"><EmailIcon opacity="0.6" /></InputAdornment>,
@@ -142,10 +141,10 @@ const TraineeComponent = (props) => {
             required
             fullWidth
             type="password"
-            error={!!getError('Password')}
-            helperText={getError('Password')}
-            onChange={handlePasswordField}
-            onBlur={() => handleBlur('Password')}
+            error={!!getError('password')}
+            helperText={getError('password')}
+            onChange={(input) => handleInputField('password', input)}
+            onBlur={() => handleBlur('password')}
             label="Password"
             InputProps={{
               startAdornment: <InputAdornment position="start"><VisibilityOffIcon opacity="0.6" /></InputAdornment>,
@@ -156,11 +155,11 @@ const TraineeComponent = (props) => {
             required
             fullWidth
             type="password"
-            error={!!getError('Confirm')}
-            helperText={getError('Confirm')}
+            error={!!getError('confirm')}
+            helperText={getError('confirm')}
             className={classes.flexElements}
-            onChange={handleConfirmField}
-            onBlur={() => handleBlur('Confirm')}
+            onChange={(input) => handleInputField('confirm', input)}
+            onBlur={() => handleBlur('confirm')}
             label="Confirm Password"
             InputProps={{
               startAdornment: <InputAdornment position="start"><VisibilityOffIcon opacity="0.6" /></InputAdornment>,
@@ -173,7 +172,7 @@ const TraineeComponent = (props) => {
         <Button autoFocus onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button disabled={hasErrors() || !isTouched()} onClick={() => onSubmit(state)} color="primary">
+        <Button disabled={hasErrors() || !isTouched()} onClick={() => handleOnSubmit(state)} color="primary">
           Submit
         </Button>
       </DialogActions>
