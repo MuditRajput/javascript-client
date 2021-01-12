@@ -73,8 +73,11 @@ const TraineeList = (props) => {
   };
 
   const handleEditDialogSubmit = async (openSnackbar, state) => {
+    console.log(state);
     const updatedUser = { originalId: details.originalId, dataToUpdate: state };
     const response = await callApi('put', '/trainee', updatedUser);
+    console.log(state);
+    console.log(response);
     if (response.data) {
       const { data: { message, status } } = response;
       openSnackbar(status, message);
@@ -113,7 +116,7 @@ const TraineeList = (props) => {
 
   useEffect(() => {
     getTrainee();
-  }, [page]);
+  }, [page, loading]);
 
   const handleDelete = async (openSnackbar) => {
     console.log(details);

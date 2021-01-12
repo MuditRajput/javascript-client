@@ -10,13 +10,14 @@ export const callApi = async (method, route, input, params) => {
     params,
   };
   try {
-    if (method === 'get') {
+    if (method === 'get' || method === 'delete') {
       response = await axios[method](`${serverUrl}${route}`, header);
       return response;
     }
+    console.log(input);
     response = await axios[method](`${serverUrl}${route}`, input, header);
     return response;
   } catch (err) {
-    return err.response;
+    return err;
   }
 };
