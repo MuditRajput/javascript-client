@@ -10,12 +10,8 @@ const TraineeList = (props) => {
   const { match: { path = '' } = {} } = props;
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleClick = () => {
+    setOpen(!open);
   };
 
   const handleSubmit = (state) => {
@@ -25,7 +21,7 @@ const TraineeList = (props) => {
   return (
     <>
       <CssBaseline />
-      <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button size="large" variant="outlined" color="primary" onClick={handleClick}>
         Add Trainee
       </Button>
       <TableComponent
@@ -45,7 +41,7 @@ const TraineeList = (props) => {
       />
       <AddDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleClick}
         onSubmit={handleSubmit}
       />
       <ul>
