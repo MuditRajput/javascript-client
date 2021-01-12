@@ -1,15 +1,21 @@
 import React from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Route } from 'react-router-dom';
 import { AuthLayout } from '../layouts';
-import { NoMatch } from '../pages';
 
-const AuthRoute = () => (
-  <Router>
-    <Switch>
-      <Route path="/login" component={AuthLayout} />
-      <Route default component={NoMatch} />
-    </Switch>
-  </Router>
+const AuthRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(matchProps) => (
+      <AuthLayout>
+        <Component {...matchProps} />
+      </AuthLayout>
+    )}
+  />
 );
+
+AuthRoute.propTypes = {
+  component: PropTypes.func.isRequired,
+};
 
 export default AuthRoute;
