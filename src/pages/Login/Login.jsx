@@ -100,17 +100,15 @@ const LoginUi = (props) => {
   };
 
   const handleCallApi = async (openSnackbar) => {
-    const { email, password } = state;
-    const response = await callApi('post', '/user/login', { email, password });
-    if (response) {
-      const { data } = response;
-      openSnackbar('success', data.message);
-      localStorage.setItem('token', data.data.token);
+    const response = await callApi('post', 'user/login', state);
+    const { data: { message, status, data } } = response;
+    if (data) {
+      openSnackbar(status, message);
+      localStorage.setItem('token', data.token);
       history.push('/');
     } else {
       setLoading(false);
-      console.log(response.message);
-      openSnackbar('error', 'Invalid Email or Password');
+      openSnackbar('error', message);
     }
   };
 

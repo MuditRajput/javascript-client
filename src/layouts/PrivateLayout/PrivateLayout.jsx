@@ -1,15 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { NavBar } from '../components';
 
-const PrivateLayout = () => {
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-  };
-  return (
+const handleLogout = () => {
+  localStorage.removeItem('token');
+};
+
+const PrivateLayout = ({ children }) => (
+  <>
     <NavBar
       handleLogout={handleLogout}
     />
-  );
+    <div className="main">{children}</div>
+  </>
+);
+
+PrivateLayout.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default PrivateLayout;

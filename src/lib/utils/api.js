@@ -17,6 +17,6 @@ export const callApi = async (method, route, input, params) => {
     response = await axios[method](`${serverUrl}${route}`, input, header);
     return response;
   } catch (err) {
-    return err;
+    return err.response;
   }
 };
