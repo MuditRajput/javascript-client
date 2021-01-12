@@ -4,20 +4,17 @@ import { Switch, Route } from 'react-router-dom';
 import TraineeList from './TraineeList';
 import TraineeDetail from './TraineeDetail';
 
-const TraineeComponent = ({ match, history }) => (
+const TraineeComponent = ({ match }) => (
   <>
     <Switch>
-      <Route exact path={`${match.path}`}>
-        <TraineeList match={match} history={history} />
-      </Route>
-      <Route exact path={`${match.path}/:id`} render={(routerProps) => <TraineeDetail match={routerProps.match} />} />
+      <Route exact path={`${match.path}`} component={TraineeList} />
+      <Route exact path={`${match.path}/:id`} component={TraineeDetail} />
     </Switch>
   </>
 );
 
 TraineeComponent.propTypes = {
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 
 export default TraineeComponent;

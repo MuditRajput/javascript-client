@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const callApi = async ({ Email, Password }) => {
+const callApi = async (method, route, input) => {
+  const serverUrl = 'http://localhost:9000/api/';
   try {
-    const response = await axios.post('http://localhost:9000/api/user/login', { email: Email, password: Password });
-    const { data: { data } } = response;
-    return data;
+    const response = await axios[method](`${serverUrl}${route}`, input);
+    return response;
   } catch (err) {
-    return err;
+    return err.response;
   }
 };
 
