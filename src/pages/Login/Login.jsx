@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container, Typography, Button, TextField, InputAdornment, makeStyles,
 } from '@material-ui/core';
@@ -33,55 +33,56 @@ export const useStyle = makeStyles((theme) => ({
 const LoginUi = () => {
   const classes = useStyle();
   const schema = yup.object().shape({
-    Email: yup.string().required('Email is required').email(),
-    Password: yup.string().required('Password is required').matches(
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character',
-    ),
+    email: yup.string().required('Email is required').email(),
+    password: yup.string().required('Password is required').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character'),
   });
 
   const [state, setstate] = useState({
-    Email: '', Password: '',
+    email: '', password: '',
   });
 
-  const [onBlur, setBlur] = useState({
-    Email: false, Password: false,
-  });
+  const [onBlur, setBlur] = useState({});
+
+  const [schemaErrors, setSchemaErrors] = useState({});
+
+  const handleErrors = (errors) => {
+    const schemaError = {};
+    if (Object.keys(errors).length) {
+      errors.inner.forEach((error) => {
+        schemaError[error.path] = error.message;
+      });
+    }
+    setSchemaErrors(schemaError);
+  };
+
+  const handleValidate = () => {
+    schema.validate(state, { abortEarly: false })
+      .then(() => { handleErrors({}); })
+      .catch((err) => { handleErrors(err); });
+  };
 
   const handleBlur = (label) => {
     setBlur({ ...onBlur, [label]: true });
   };
 
-  const isTouched = () => (onBlur.Email || onBlur.Password);
-
-  const hasErrors = () => {
-    try {
-      schema.validateSync(state);
-    } catch (err) {
-      return true;
-    }
-    return false;
-  };
-
   const getError = (label) => {
-    if (onBlur[label] && hasErrors()) {
-      try {
-        schema.validateSyncAt(label, state);
-      } catch (err) {
-        return err.message;
-      }
+    if (onBlur[label]) {
+      return schemaErrors[label] || '';
     }
-    return null;
+    return '';
   };
 
-  const handleEmailField = (input) => {
-    setstate({
-      ...state, Email: input.target.value,
-    });
-  };
+  useEffect(() => {
+    handleValidate();
+  }, [state]);
 
-  const handlePasswordField = (input) => {
+  const hasErrors = () => Object.keys(schemaErrors).length !== 0;
+
+  const isTouched = () => Object.keys(onBlur).length !== 0;
+
+  const handleInputField = (label, input) => {
     setstate({
-      ...state, Password: input.target.value,
+      ...state, [label]: input.target.value,
     });
   };
 
@@ -104,10 +105,10 @@ const LoginUi = () => {
             fullWidth
             size="small"
             margin="normal"
-            error={!!getError('Email')}
-            helperText={getError('Email')}
-            onChange={handleEmailField}
-            onBlur={() => handleBlur('Email')}
+            error={!!getError('email')}
+            helperText={getError('email')}
+            onChange={(input) => handleInputField('email', input)}
+            onBlur={() => handleBlur('email')}
             label="Email"
             InputProps={{
               startAdornment: <InputAdornment position="start"><EmailIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
@@ -120,11 +121,11 @@ const LoginUi = () => {
             margin="normal"
             size="small"
             type="password"
-            error={!!getError('Password')}
-            helperText={getError('Password')}
-            onChange={handlePasswordField}
-            onBlur={() => handleBlur('Password')}
-            label="Password"
+            error={!!getError('password')}
+            helperText={getError('password')}
+            onChange={(input) => handleInputField('password', input)}
+            onBlur={() => handleBlur('password')}
+            label="password"
             InputProps={{
               startAdornment: <InputAdornment position="start"><VisibilityOffIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
             }}

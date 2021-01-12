@@ -1,13 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Footer } from '../components';
-import { LoginUi } from '../../pages';
 
-const AuthLayout = () => (
+const AuthLayout = ({ children }) => (
   <>
-    <LoginUi />
-    <br />
+    {children}
     <Footer />
   </>
 );
+
+AuthLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default AuthLayout;
