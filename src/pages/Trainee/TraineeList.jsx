@@ -73,18 +73,17 @@ const TraineeList = (props) => {
   };
 
   const handleEditDialogSubmit = async (openSnackbar, state) => {
+    setLoading(true);
     console.log(state);
     const updatedUser = { originalId: details.originalId, dataToUpdate: state };
     const response = await callApi('put', '/trainee', updatedUser);
-    console.log(state);
-    console.log(response);
-    if (response.data) {
-      const { data: { message, status } } = response;
+    const { data: { message, status, data } } = response;
+    if (data) {
       openSnackbar(status, message);
       setLoading(false);
       setEditOpen(false);
     } else {
-      openSnackbar('error', 'Trainee Not Updated');
+      openSnackbar('error', message);
       setLoading(false);
     }
   };
@@ -119,23 +118,26 @@ const TraineeList = (props) => {
   }, [page, loading]);
 
   const handleDelete = async (openSnackbar) => {
+    setLoading(true);
     console.log(details);
     if (details.createdAt >= '2019-02-14') {
       const response = await callApi('delete', `trainee/${details.originalId}`);
-      if (response.data) {
-        const { data: { message, status } } = response;
+      const { data: { message, status, data } } = response;
+      if (data) {
         openSnackbar(status, message);
         setLoading(false);
         setEditOpen(false);
       } else {
-        openSnackbar('error', 'Trainee Not Deleted');
+        openSnackbar('error', message);
         setLoading(false);
+      }
+      if (page > 0 && trainees.Trainees.length === 1) {
+        setPage(page - 1);
       }
     } else {
       openSnackbar('error', 'Trainee cannot be Deleted');
     }
     setDeleteOpen(false);
-    console.log(details);
   };
 
   return (
@@ -150,7 +152,7 @@ const TraineeList = (props) => {
             id="_id"
             data={trainees.Trainees}
             loader={loading}
-            dataLength={10}
+            dataLength={trainees.TotalCount}
             columns={[
               {
                 field: 'name',
