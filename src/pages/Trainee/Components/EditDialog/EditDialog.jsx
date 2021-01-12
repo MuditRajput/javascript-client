@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   DialogActions, Dialog, DialogContentText, DialogContent,
@@ -19,54 +19,55 @@ const EditDialog = (props) => {
     open, onClose, onSubmit, defaultValues,
   } = props;
   const classes = useStyle();
-  const schema = yup.object().shape({
-    Name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
-    Email: yup.string().required('Email is required').email(),
-  });
-
   const [state, setstate] = useState({
-    Name: '', Email: '',
+    name: '', email: '',
+  });
+  const [onBlur, setBlur] = useState({});
+  const [schemaErrors, setSchemaErrors] = useState({});
+
+  const schema = yup.object().shape({
+    name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
+    email: yup.string().required('Email is required').email(),
   });
 
-  const [onBlur, setBlur] = useState({
-    Name: false, Email: false,
-  });
+  const handleErrors = (errors) => {
+    const schemaError = {};
+    if (Object.keys(errors).length) {
+      errors.inner.forEach((error) => {
+        schemaError[error.path] = error.message;
+      });
+    }
+    setSchemaErrors(schemaError);
+  };
+
+  const handleValidate = () => {
+    schema.validate(state, { abortEarly: false })
+      .then(() => { handleErrors({}); })
+      .catch((err) => { handleErrors(err); });
+  };
 
   const handleBlur = (label) => {
     setBlur({ ...onBlur, [label]: true });
   };
 
-  const isTouched = () => (onBlur.Name || onBlur.Email);
-
-  const hasErrors = () => {
-    try {
-      schema.validateSync(state);
-    } catch (err) {
-      return true;
-    }
-    return false;
-  };
-
   const getError = (label) => {
-    if (onBlur[label] && hasErrors()) {
-      try {
-        schema.validateSyncAt(label, state);
-      } catch (err) {
-        return err.message;
-      }
+    if (onBlur[label]) {
+      return schemaErrors[label] || '';
     }
-    return null;
+    return '';
   };
 
-  const handleNameField = (input) => {
-    setstate({
-      ...state, Name: input.target.value,
-    });
-  };
+  useEffect(() => {
+    handleValidate();
+  }, [state]);
 
-  const handleEmailField = (input) => {
+  const hasErrors = () => Object.keys(schemaErrors).length !== 0;
+
+  const isTouched = () => Object.keys(onBlur).length !== 0;
+
+  const handleInputField = (label, input) => {
     setstate({
-      ...state, Email: input.target.value,
+      ...state, [label]: input.target.value,
     });
   };
 
@@ -74,9 +75,14 @@ const EditDialog = (props) => {
     setBlur({ Name: false, Email: false });
     onClose();
   };
+
   const handleSubmit = (details) => {
     setBlur({ Name: false, Email: false });
     onSubmit(details);
+    setstate({
+      name: '', email: '', password: '', confirm: '',
+    });
+    setBlur({});
   };
 
   return (
@@ -96,12 +102,12 @@ const EditDialog = (props) => {
         <TextField
           required
           fullWidth
-          error={!!getError('Name')}
-          helperText={getError('Name')}
+          error={!!getError('name')}
+          helperText={getError('name')}
           className={classes.margin}
           defaultValue={defaultValues.name}
-          onChange={handleNameField}
-          onBlur={() => handleBlur('Name')}
+          onChange={(input) => handleInputField('name', input)}
+          onBlur={() => handleBlur('name')}
           label="Name"
           id="outlined-start-adornment"
           InputProps={{
@@ -112,12 +118,12 @@ const EditDialog = (props) => {
         <TextField
           required
           fullWidth
-          error={!!getError('Email')}
-          helperText={getError('Email')}
+          error={!!getError('email')}
+          helperText={getError('email')}
           className={classes.margin}
           defaultValue={defaultValues.email}
-          onChange={handleEmailField}
-          onBlur={() => handleBlur('Email')}
+          onChange={(input) => handleInputField('email', input)}
+          onBlur={() => handleBlur('email')}
           label="Email"
           InputProps={{
             startAdornment: <InputAdornment position="start"><EmailIcon opacity="0.6" /></InputAdornment>,

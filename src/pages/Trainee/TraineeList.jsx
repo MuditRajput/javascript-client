@@ -82,7 +82,7 @@ const TraineeList = (props) => {
 
   const getTrainee = () => {
     const skip = page * limit;
-    callApi('get', '/trainee', {}, { skip, limit })
+    callApi('get', 'trainee', {}, { skip, limit })
       .then((response) => {
         const { data: { data: { UsersList, totalCount } } } = response;
         setTrainees({ Trainees: UsersList, TotalCount: totalCount });
