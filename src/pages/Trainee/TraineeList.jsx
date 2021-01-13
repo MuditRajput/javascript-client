@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import moment from 'moment';
@@ -7,10 +7,10 @@ import { AddDialog } from './Components';
 import { TableComponent } from '../../components';
 
 const TraineeList = (props) => {
-  const { match, history } = props;
-  const [open, setOpen] = React.useState(false);
-  const [order, setOrder] = React.useState();
-  const [orderBy, setOrderBy] = React.useState();
+  const { match: { path = '' } = {}, history = {} } = props;
+  const [open, setOpen] = useState(false);
+  const [order, setOrder] = useState();
+  const [orderBy, setOrderBy] = useState();
 
   const handleSort = (property) => {
     setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
@@ -18,17 +18,13 @@ const TraineeList = (props) => {
   };
 
   const handleSelect = (property) => {
-    history.push(`${match.path}/${property}`);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
+    history.push(`${path}/${property}`);
   };
 
   const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleClick = () => {
+    setOpen(!open);
   };
 
   const handleSubmit = (state) => {
@@ -38,7 +34,7 @@ const TraineeList = (props) => {
   return (
     <>
       <CssBaseline />
-      <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button size="large" variant="outlined" color="primary" onClick={handleClick}>
         Add Trainee
       </Button>
       <TableComponent
@@ -68,7 +64,7 @@ const TraineeList = (props) => {
       />
       <AddDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleClick}
         onSubmit={handleSubmit}
       />
     </>
