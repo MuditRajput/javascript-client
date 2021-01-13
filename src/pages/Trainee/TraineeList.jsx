@@ -4,17 +4,14 @@ import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import trainees from './data/Trainee';
 import { AddDialog } from './Components';
+import { TableComponent } from '../../components';
 
 const TraineeList = (props) => {
   const { match: { path = '' } = {} } = props;
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleClick = () => {
+    setOpen(!open);
   };
 
   const handleSubmit = (state) => {
@@ -24,12 +21,27 @@ const TraineeList = (props) => {
   return (
     <>
       <CssBaseline />
-      <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+      <Button size="large" variant="outlined" color="primary" onClick={handleClick}>
         Add Trainee
       </Button>
+      <TableComponent
+        id="id"
+        data={trainees}
+        columns={[
+          {
+            field: 'name',
+            label: 'Name',
+            align: 'center',
+          },
+          {
+            field: 'email',
+            label: 'Email Address',
+          },
+        ]}
+      />
       <AddDialog
         open={open}
-        onClose={handleClose}
+        onClose={handleClick}
         onSubmit={handleSubmit}
       />
       <ul>

@@ -28,16 +28,16 @@ const NavBar = () => {
             Trainee Portal
           </Typography>
           <NavLink to="/trainee">
-            <Button className={classes.menuButton} color="textSecondary">TRAINEE</Button>
+            <Button className={classes.menuButton}>TRAINEE</Button>
           </NavLink>
           <NavLink to="/text-field-demo">
-            <Button className={classes.menuButton} color="textSecondary">TEXTFIELD DEMO</Button>
+            <Button className={classes.menuButton}>TEXTFIELD DEMO</Button>
           </NavLink>
           <NavLink to="/input-demo">
-            <Button className={classes.menuButton} color="textSecondary">INPUT DEMO</Button>
+            <Button className={classes.menuButton}>INPUT DEMO</Button>
           </NavLink>
           <NavLink to="/children-demo">
-            <Button className={classes.menuButton} color="textSecondary">CHILDREN DEMO</Button>
+            <Button className={classes.menuButton}>CHILDREN DEMO</Button>
           </NavLink>
           <Button className={classes.menuButton} color="inherit">LOGOUT</Button>
         </Toolbar>
