@@ -1,33 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  makeStyles, withStyles, Table, TableCell, TableBody, TableContainer,
+  makeStyles, Table, TableCell, TableBody, TableContainer,
   TableHead, Paper, TableRow, Typography, TableSortLabel,
 } from '@material-ui/core';
+import { StyledTableCell, StyledTableRow } from './style';
 
 const useStyles = makeStyles({
   table: {
     margin: '10px 0px',
   },
 });
-
-const StyledTableCell = withStyles(() => ({
-  root: {
-    color: '#8b8b8b',
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.disabledBackground,
-      cursor: 'pointer',
-    },
-  },
-}))(TableRow);
 
 const TableComponent = (props) => {
   const {
@@ -44,9 +27,9 @@ const TableComponent = (props) => {
                 <StyledTableCell align={column.align} key={column.label}>
                   <TableSortLabel
                     hideSortIcon
-                    active={orderBy === column.label}
+                    active={orderBy === column.field}
                     direction={order}
-                    onClick={() => onSort(column.label)}
+                    onClick={() => onSort(column.field)}
                   >
                     <Typography variant="body2">
                       {column.label}
@@ -90,7 +73,7 @@ TableComponent.propTypes = {
 
 TableComponent.defaultProps = {
   order: 'asc',
-  orderBy: 'name',
+  orderBy: '',
 };
 
 export default TableComponent;

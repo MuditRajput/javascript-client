@@ -9,16 +9,16 @@ import { TableComponent } from '../../components';
 const TraineeList = (props) => {
   const { match: { path = '' } = {}, history = {} } = props;
   const [open, setOpen] = useState(false);
-  const [order, setOrder] = useState();
+  const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState();
 
-  const handleSort = (property) => {
-    setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
-    setOrderBy(property);
+  const handleSort = (selectedColumn) => {
+    setOrder(order === 'asc' && orderBy === selectedColumn ? 'desc' : 'asc');
+    setOrderBy(selectedColumn);
   };
 
-  const handleSelect = (property) => {
-    history.push(`${path}/${property}`);
+  const handleSelect = (selectedTraineeId) => {
+    history.push(`${path}/${selectedTraineeId}`);
   };
 
   const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
