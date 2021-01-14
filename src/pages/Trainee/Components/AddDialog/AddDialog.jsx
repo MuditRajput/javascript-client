@@ -85,6 +85,14 @@ const TraineeComponent = (props) => {
     });
   };
 
+  const handleOnSubmit = () => {
+    onSubmit(state);
+    setstate({
+      name: '', email: '', password: '', confirm: '',
+    });
+    setBlur({});
+  };
+
   return (
     <Dialog
       open={open}
@@ -164,7 +172,7 @@ const TraineeComponent = (props) => {
         <Button autoFocus onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button disabled={hasErrors() || !isTouched()} onClick={() => onSubmit(state)} color="primary">
+        <Button disabled={hasErrors() || !isTouched()} onClick={() => handleOnSubmit(state)} color="primary">
           Submit
         </Button>
       </DialogActions>

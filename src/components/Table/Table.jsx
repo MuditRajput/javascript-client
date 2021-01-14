@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  makeStyles, Table, TableCell, TableBody, TableContainer, TableHead, Paper, TableRow, Typography,
+  makeStyles, Table, TableCell, TableBody, TableContainer,
+  TableHead, Paper, TableRow, Typography, TableSortLabel,
 } from '@material-ui/core';
+import { StyledTableCell, StyledTableRow } from './style';
 
 const useStyles = makeStyles({
   table: {
@@ -11,7 +13,9 @@ const useStyles = makeStyles({
 });
 
 const TableComponent = (props) => {
-  const { id, data, columns } = props;
+  const {
+    id, data, columns, order, orderBy, onSort, onSelect,
+  } = props;
   const classes = useStyles();
   return (
     <TableContainer className={classes.table} component={Paper}>
@@ -20,24 +24,36 @@ const TableComponent = (props) => {
           <TableRow>
             {
               columns.map((column) => (
-                <TableCell key={column.label} align={column.align}><Typography color="textSecondary">{column.label}</Typography></TableCell>
+                <StyledTableCell align={column.align} key={column.label}>
+                  <TableSortLabel
+                    hideSortIcon
+                    active={orderBy === column.field}
+                    direction={order}
+                    onClick={() => onSort(column.field)}
+                  >
+                    <Typography variant="body2">
+                      {column.label}
+                    </Typography>
+                  </TableSortLabel>
+                </StyledTableCell>
               ))
             }
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((trainee) => (
-            <TableRow key={trainee[id]}>
+            <StyledTableRow key={trainee[id]} onClick={() => onSelect(trainee[id])}>
               {
                 columns.map((column) => (
                   <TableCell key={`${trainee[id]}${column.field}`} align={column.align}>
                     <Typography>
-                      {trainee[column.field]}
+                      {column.format
+                        ? column.format(trainee[column.field]) : trainee[column.field]}
                     </Typography>
                   </TableCell>
                 ))
               }
-            </TableRow>
+            </StyledTableRow>
           ))}
         </TableBody>
       </Table>
@@ -49,6 +65,15 @@ TableComponent.propTypes = {
   id: PropTypes.string.isRequired,
   columns: PropTypes.arrayOf(Object).isRequired,
   data: PropTypes.arrayOf(Object).isRequired,
+  order: PropTypes.string,
+  orderBy: PropTypes.string,
+  onSort: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
+
+TableComponent.defaultProps = {
+  order: 'asc',
+  orderBy: '',
 };
 
 export default TableComponent;
