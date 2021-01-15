@@ -72,15 +72,15 @@ const EditDialog = (props) => {
   };
 
   const handleClose = () => {
-    setBlur({ Name: false, Email: false });
+    setBlur({ name: false, email: false });
     onClose();
   };
 
   const handleSubmit = (details) => {
-    setBlur({ Name: false, Email: false });
+    setBlur({ name: false, email: false });
     onSubmit(details);
     setstate({
-      name: '', email: '', password: '', confirm: '',
+      name: '', email: '',
     });
     setBlur({});
   };

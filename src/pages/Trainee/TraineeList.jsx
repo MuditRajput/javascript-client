@@ -17,6 +17,7 @@ const TraineeList = (props) => {
   const [orderBy, setOrderBy] = useState();
   const [page, setPage] = useState(0);
   const [details, setDetails] = useState({});
+  const [tabledata] = useState({ count: 100, rowsPerPage: 5 });
 
   const handleSort = (selectedColumn) => {
     setOrder(order === 'asc' && orderBy === selectedColumn ? 'desc' : 'asc');
@@ -112,8 +113,8 @@ const TraineeList = (props) => {
         onSelect={handleSelect}
         page={page}
         onChangePage={handleChangePage}
-        count={100}
-        rowsPerPage={5}
+        count={tabledata.count}
+        rowsPerPage={tabledata.rowsPerPage}
       />
       <AddDialog
         open={open}

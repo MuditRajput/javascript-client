@@ -55,7 +55,7 @@ const TableComponent = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((trainee) => (
+          {data.map((trainee, traineeIndex) => (
             <StyledTableRow key={trainee[id]}>
               {
                 columns.map((column) => (
@@ -67,10 +67,10 @@ const TableComponent = (props) => {
                   </TableCell>
                 ))
               }
-              <TableCell align="center" key={`${trainee[id]}action`}>
+              <TableCell align="center" key={`${trainee[id]}${traineeIndex + 1}`}>
                 {
                   actions.map((action, index) => (
-                    <IconButton key={`action${index + 1}`} disableFocusRipple size="small" onClick={() => action.handler(trainee)}>
+                    <IconButton key={`${index + 1}`} disableFocusRipple size="small" onClick={() => action.handler(trainee)}>
                       {action.icon}
                     </IconButton>
                   ))
