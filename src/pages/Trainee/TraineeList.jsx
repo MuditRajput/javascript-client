@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -7,36 +7,41 @@ import moment from 'moment';
 import trainees from './data/Trainee';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent } from '../../components';
+import { SnackbarContext } from '../../contexts';
 
 const TraineeList = (props) => {
-  const { match: { path }, history } = props;
-  const [open, setOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState();
-  const [page, setPage] = useState(0);
-  const [details, setDetails] = useState({});
-  const [tabledata] = useState({ count: 100, rowsPerPage: 5 });
+  const { match, history } = props;
+  const [open, setOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [order, setOrder] = React.useState();
+  const [orderBy, setOrderBy] = React.useState();
+  const [page, setPage] = React.useState(0);
+  const [details, setDetails] = React.useState({});
 
-  const handleSort = (selectedColumn) => {
-    setOrder(order === 'asc' && orderBy === selectedColumn ? 'desc' : 'asc');
-    setOrderBy(selectedColumn);
+  const handleSort = (property) => {
+    setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
+    setOrderBy(property);
   };
 
-  const handleSelect = (selectedTraineeId) => {
-    history.push(`${path}/${selectedTraineeId}`);
+  const handleSelect = (property) => {
+    history.push(`${match.path}/${property}`);
   };
 
-  const handleClick = () => {
-    setOpen(!open);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleSubmit = (state) => {
+  const handleSubmit = (openSnackbar, state) => {
+    openSnackbar('success', 'Trainee Created Successfully');
     setOpen(false);
     console.log(state);
   };
@@ -57,7 +62,8 @@ const TraineeList = (props) => {
     setEditOpen(false);
   };
 
-  const handleEditDialogSubmit = (state) => {
+  const handleEditDialogSubmit = (openSnackbar, state) => {
+    openSnackbar('success', 'Trainee Updated Successfully');
     setEditOpen(false);
     console.log(state);
   };
@@ -66,73 +72,82 @@ const TraineeList = (props) => {
     setDeleteOpen(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (openSnackbar) => {
+    if (details.createdAt >= '2019-02-14') {
+      openSnackbar('success', 'Trainee Deleted Successfully');
+    } else {
+      openSnackbar('error', 'Trainee cannot be Deleted');
+    }
     setDeleteOpen(false);
     console.log(details);
   };
 
   return (
-    <>
-      <CssBaseline />
-      <Button size="large" variant="outlined" color="primary" onClick={handleClick}>
-        Add Trainee
-      </Button>
-      <TableComponent
-        id="id"
-        data={trainees}
-        columns={[
-          {
-            field: 'name',
-            label: 'Name',
-          },
-          {
-            field: 'email',
-            label: 'Email Address',
-            format: (value) => value && value.toUpperCase(),
-          },
-          {
-            field: 'createdAt',
-            label: 'Date',
-            align: 'right',
-            format: getDateFormatted,
-          },
-        ]}
-        actions={[
-          {
-            icon: <EditIcon />,
-            handler: handleEditDialogOpen,
-          },
-          {
-            icon: <DeleteIcon />,
-            handler: handleDeleteDialogOpen,
-          },
-        ]}
-        order={order}
-        orderBy={orderBy}
-        onSort={handleSort}
-        onSelect={handleSelect}
-        page={page}
-        onChangePage={handleChangePage}
-        count={tabledata.count}
-        rowsPerPage={tabledata.rowsPerPage}
-      />
-      <AddDialog
-        open={open}
-        onClose={handleClick}
-        onSubmit={handleSubmit}
-      />
-      <EditDialog
-        open={editOpen}
-        onClose={handleEditDialogClose}
-        onSubmit={handleEditDialogSubmit}
-        defaultValues={details}
-      />
-      <DeleteDialog
-        open={deleteOpen}
-        onClose={handleDeleteClose}
-        onDelete={handleDelete}
-      />
-    </>
+    <SnackbarContext.Consumer>
+      {({ openSnackbar }) => (
+        <>
+          <CssBaseline />
+          <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+            Add Trainee
+          </Button>
+          <TableComponent
+            id="id"
+            data={trainees}
+            columns={[
+              {
+                field: 'name',
+                label: 'Name',
+              },
+              {
+                field: 'email',
+                label: 'Email Address',
+                format: (value) => value && value.toUpperCase(),
+              },
+              {
+                field: 'createdAt',
+                label: 'Date',
+                align: 'right',
+                format: getDateFormatted,
+              },
+            ]}
+            actions={[
+              {
+                icon: <EditIcon />,
+                handler: handleEditDialogOpen,
+              },
+              {
+                icon: <DeleteIcon />,
+                handler: handleDeleteDialogOpen,
+              },
+            ]}
+            order={order}
+            orderBy={orderBy}
+            onSort={handleSort}
+            onSelect={handleSelect}
+            page={page}
+            onChangePage={handleChangePage}
+            count={100}
+            rowsPerPage={5}
+          />
+          <AddDialog
+            open={open}
+            onClose={handleClose}
+            onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
+          />
+          <EditDialog
+            open={editOpen}
+            onClose={handleEditDialogClose}
+            onSubmit={(editTraineeState) => handleEditDialogSubmit(openSnackbar, editTraineeState)}
+            defaultValues={details}
+          />
+          <DeleteDialog
+            open={deleteOpen}
+            onClose={handleDeleteClose}
+            onDelete={() => handleDelete(openSnackbar)}
+          />
+        </>
+      )}
+    </SnackbarContext.Consumer>
   );
 };
 
