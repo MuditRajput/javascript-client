@@ -1,48 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  makeStyles, withStyles, Table, TableCell, TableBody, TableContainer,
+  makeStyles, Table, TableCell, TableBody, TableContainer,
   TableHead, Paper, TableRow, Typography, TableSortLabel, TablePagination, IconButton,
 } from '@material-ui/core';
+import { StyledTableCell, StyledTableRow } from './style';
 
 const useStyles = makeStyles({
   table: {
     margin: '10px 0px',
   },
 });
-
-const StyledTableCell = withStyles(() => ({
-  root: {
-    color: '#8b8b8b',
-  },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.disabledBackground,
-      cursor: 'pointer',
-    },
-  },
-}))(TableRow);
-
-const ActionsCell = (ActionProps) => {
-  const { actions, details } = ActionProps;
-  return (
-    <>
-      {
-        actions.map((action, index) => (
-          <IconButton key={`action${index + 1}`} disableFocusRipple size="small" onClick={() => action.handler(details)}>
-            {action.icon}
-          </IconButton>
-        ))
-      }
-    </>
-  );
-};
 
 const TableComponent = (props) => {
   const {
@@ -73,9 +41,9 @@ const TableComponent = (props) => {
                 <StyledTableCell align={column.align} key={column.label}>
                   <TableSortLabel
                     hideSortIcon
-                    active={orderBy === column.label}
+                    active={orderBy === column.field}
                     direction={order}
-                    onClick={() => onSort(column.label)}
+                    onClick={() => onSort(column.field)}
                   >
                     <Typography variant="body2">
                       {column.label}
@@ -87,7 +55,7 @@ const TableComponent = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((trainee) => (
+          {data.map((trainee, traineeIndex) => (
             <StyledTableRow key={trainee[id]}>
               {
                 columns.map((column) => (
@@ -99,8 +67,14 @@ const TableComponent = (props) => {
                   </TableCell>
                 ))
               }
-              <TableCell align="center" key={`${trainee[id]}action`}>
-                <ActionsCell actions={actions} details={trainee} />
+              <TableCell align="center" key={`${trainee[id]}${traineeIndex + 1}`}>
+                {
+                  actions.map((action, index) => (
+                    <IconButton key={`${index + 1}`} disableFocusRipple size="small" onClick={() => action.handler(trainee)}>
+                      {action.icon}
+                    </IconButton>
+                  ))
+                }
               </TableCell>
             </StyledTableRow>
           ))}
@@ -128,7 +102,7 @@ TableComponent.propTypes = {
 
 TableComponent.defaultProps = {
   order: 'asc',
-  orderBy: 'name',
+  orderBy: '',
   actions: [],
   page: 0,
   count: 0,
