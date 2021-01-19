@@ -35,7 +35,6 @@ const SnackBarProvider = (props) => {
         {children}
       </SnackbarContext.Provider>
       <SnackBar
-        duration={3000}
         open={snackValues.open}
         onClose={snackBarClose}
         message={snackValues.message}
