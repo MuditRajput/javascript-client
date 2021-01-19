@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -10,27 +10,30 @@ import { TableComponent } from '../../components';
 import { SnackbarContext } from '../../contexts';
 
 const TraineeList = (props) => {
-  const { match: { path }, history } = props;
-  const [open, setOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState();
-  const [page, setPage] = useState(0);
-  const [details, setDetails] = useState({});
-  const [tabledata] = useState({ count: 100, rowsPerPage: 5 });
+  const { match, history } = props;
+  const [open, setOpen] = React.useState(false);
+  const [editOpen, setEditOpen] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [order, setOrder] = React.useState();
+  const [orderBy, setOrderBy] = React.useState();
+  const [page, setPage] = React.useState(0);
+  const [details, setDetails] = React.useState({});
 
-  const handleSort = (selectedColumn) => {
-    setOrder(order === 'asc' && orderBy === selectedColumn ? 'desc' : 'asc');
-    setOrderBy(selectedColumn);
+  const handleSort = (property) => {
+    setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
+    setOrderBy(property);
   };
 
-  const handleSelect = (selectedTraineeId) => {
-    history.push(`${path}/${selectedTraineeId}`);
+  const handleSelect = (property) => {
+    history.push(`${match.path}/${property}`);
   };
 
-  const handleClick = () => {
-    setOpen(!open);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -84,7 +87,7 @@ const TraineeList = (props) => {
       {({ openSnackbar }) => (
         <>
           <CssBaseline />
-          <Button size="large" variant="outlined" color="primary" onClick={handleClick}>
+          <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
             Add Trainee
           </Button>
           <TableComponent
@@ -123,18 +126,18 @@ const TraineeList = (props) => {
             onSelect={handleSelect}
             page={page}
             onChangePage={handleChangePage}
-            count={tabledata.count}
-            rowsPerPage={tabledata.rowsPerPage}
+            count={100}
+            rowsPerPage={5}
           />
           <AddDialog
             open={open}
-            onClose={handleClick}
-            onSubmit={(state) => handleSubmit(openSnackbar, state)}
+            onClose={handleClose}
+            onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
           <EditDialog
             open={editOpen}
             onClose={handleEditDialogClose}
-            onSubmit={(state) => handleEditDialogSubmit(openSnackbar, state)}
+            onSubmit={(editTraineeState) => handleEditDialogSubmit(openSnackbar, editTraineeState)}
             defaultValues={details}
           />
           <DeleteDialog
