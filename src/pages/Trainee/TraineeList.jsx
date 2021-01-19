@@ -132,12 +132,12 @@ const TraineeList = (props) => {
           <AddDialog
             open={open}
             onClose={handleClose}
-            onSubmit={(state) => handleSubmit(openSnackbar, state)}
+            onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
           <EditDialog
             open={editOpen}
             onClose={handleEditDialogClose}
-            onSubmit={(state) => handleEditDialogSubmit(openSnackbar, state)}
+            onSubmit={(editTraineeState) => handleEditDialogSubmit(openSnackbar, editTraineeState)}
             defaultValues={details}
           />
           <DeleteDialog
