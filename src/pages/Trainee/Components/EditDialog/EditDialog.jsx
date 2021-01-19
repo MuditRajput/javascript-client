@@ -6,40 +6,29 @@ import {
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import EmailIcon from '@material-ui/icons/Email';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import * as yup from 'yup';
 
 export const useStyle = makeStyles(() => ({
   margin: {
     margin: '10px 0',
   },
-  flexRow: {
-    display: 'flex',
-    alignContent: 'space-between',
-    margin: '10px 0',
-  },
-  flexElements: {
-    marginLeft: '15px',
-  },
 }));
 
-const TraineeComponent = (props) => {
-  const { open, onClose, onSubmit } = props;
+const EditDialog = (props) => {
+  const {
+    open, onClose, onSubmit, defaultValues,
+  } = props;
   const classes = useStyle();
+  const [state, setstate] = useState({
+    name: '', email: '',
+  });
+  const [onBlur, setBlur] = useState({});
+  const [schemaErrors, setSchemaErrors] = useState({});
+
   const schema = yup.object().shape({
     name: yup.string().required('Name is required').min(3, 'should have more then 3 characters'),
     email: yup.string().required('Email is required').email(),
-    password: yup.string().required('Password is required').matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, 'Password must contain at least 8 characters with at least one uppercase, one lowercase, one number, one special character'),
-    confirm: yup.string().required('Required').oneOf([yup.ref('password'), ''], 'Confirm Password is different'),
   });
-
-  const [state, setstate] = useState({
-    name: '', email: '', password: '', confirm: '',
-  });
-
-  const [onBlur, setBlur] = useState({});
-
-  const [schemaErrors, setSchemaErrors] = useState({});
 
   const handleErrors = (errors) => {
     const schemaError = {};
@@ -82,10 +71,15 @@ const TraineeComponent = (props) => {
     });
   };
 
-  const handleOnSubmit = () => {
-    onSubmit(state);
+  const handleClose = () => {
+    setBlur({});
+    onClose();
+  };
+
+  const handleSubmit = (details) => {
+    onSubmit(details);
     setstate({
-      name: '', email: '', password: '', confirm: '',
+      name: '', email: '',
     });
     setBlur({});
   };
@@ -98,11 +92,11 @@ const TraineeComponent = (props) => {
       maxWidth="md"
     >
       <DialogTitle>
-        Add Trainee
+        Edit Trainee
       </DialogTitle>
       <DialogContent>
         <DialogContentText fontSize={16}>
-          Enter Your Trainee Details
+          Edit Your New Details
         </DialogContentText>
         <TextField
           required
@@ -110,6 +104,7 @@ const TraineeComponent = (props) => {
           error={!!getError('name')}
           helperText={getError('name')}
           className={classes.margin}
+          defaultValue={defaultValues.name}
           onChange={(input) => handleInputField('name', input)}
           onBlur={() => handleBlur('name')}
           label="Name"
@@ -125,6 +120,7 @@ const TraineeComponent = (props) => {
           error={!!getError('email')}
           helperText={getError('email')}
           className={classes.margin}
+          defaultValue={defaultValues.email}
           onChange={(input) => handleInputField('email', input)}
           onBlur={() => handleBlur('email')}
           label="Email"
@@ -133,43 +129,12 @@ const TraineeComponent = (props) => {
           }}
           variant="outlined"
         />
-        <div className={classes.flexRow}>
-          <TextField
-            required
-            fullWidth
-            type="password"
-            error={!!getError('password')}
-            helperText={getError('password')}
-            onChange={(input) => handleInputField('password', input)}
-            onBlur={() => handleBlur('password')}
-            label="Password"
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><VisibilityOffIcon opacity="0.6" /></InputAdornment>,
-            }}
-            variant="outlined"
-          />
-          <TextField
-            required
-            fullWidth
-            type="password"
-            error={!!getError('confirm')}
-            helperText={getError('confirm')}
-            className={classes.flexElements}
-            onChange={(input) => handleInputField('confirm', input)}
-            onBlur={() => handleBlur('confirm')}
-            label="Confirm Password"
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><VisibilityOffIcon opacity="0.6" /></InputAdornment>,
-            }}
-            variant="outlined"
-          />
-        </div>
       </DialogContent>
       <DialogActions className={classes.margin}>
-        <Button autoFocus onClick={onClose} color="secondary">
+        <Button autoFocus onClick={handleClose} color="secondary">
           Cancel
         </Button>
-        <Button disabled={hasErrors() || !isTouched()} onClick={() => handleOnSubmit(state)} color="primary">
+        <Button disabled={hasErrors() || !isTouched()} onClick={() => handleSubmit(state)} color="primary">
           Submit
         </Button>
       </DialogActions>
@@ -177,14 +142,16 @@ const TraineeComponent = (props) => {
   );
 };
 
-TraineeComponent.propTypes = {
+EditDialog.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  defaultValues: PropTypes.object,
 };
 
-TraineeComponent.defaultProps = {
+EditDialog.defaultProps = {
   open: false,
+  defaultValues: {},
 };
 
-export default TraineeComponent;
+export default EditDialog;
