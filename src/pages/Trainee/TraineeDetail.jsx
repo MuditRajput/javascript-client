@@ -24,9 +24,9 @@ const useStyles = makeStyles(() => ({
 const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
 
 const TraineeDetail = (props) => {
+  const { match: { params: { id = '' } = {} } = {} } = props;
   const Trainees = JSON.parse(localStorage.getItem('Trainees'));
   const traineeId = '_id';
-  const { match: { params: { id } } } = props;
   const classes = useStyles();
   const detail = Trainees.find((trainee) => trainee[traineeId] === id);
   if (!detail) {

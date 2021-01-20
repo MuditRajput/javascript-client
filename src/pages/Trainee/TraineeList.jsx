@@ -44,15 +44,16 @@ const TraineeList = (props) => {
 
   const handleSubmit = async (openSnackbar, state) => {
     setLoading(true);
+    console.log(state);
     const response = await callApi('post', '/trainee', state);
-    if (response.data) {
-      const { data: { message } } = response;
-      openSnackbar('success', message);
+    const { data: { message, status, data } = {} } = response;
+    if (data) {
+      openSnackbar(status, message);
       setOpen(false);
       setLoading(false);
     } else {
-      openSnackbar('error', 'Trainee Not Created');
       setLoading(false);
+      openSnackbar('error', message);
     }
   };
 
@@ -104,7 +105,7 @@ const TraineeList = (props) => {
   };
   useEffect(() => {
     getTrainee();
-  }, [page]);
+  }, [page, loading]);
 
   const handleDelete = (openSnackbar) => {
     if (details.createdAt >= '2019-02-14') {
@@ -170,12 +171,12 @@ const TraineeList = (props) => {
             open={open}
             loading={loading}
             onClose={handleClose}
-            onSubmit={(state) => handleSubmit(openSnackbar, state)}
+            onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
           <EditDialog
             open={editOpen}
             onClose={handleEditDialogClose}
-            onSubmit={(state) => handleEditDialogSubmit(openSnackbar, state)}
+            onSubmit={(editTraineeState) => handleEditDialogSubmit(openSnackbar, editTraineeState)}
             defaultValues={details}
           />
           <DeleteDialog

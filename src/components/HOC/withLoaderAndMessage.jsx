@@ -8,14 +8,14 @@ const withLoaderAndMessage = (WrappedComponent) => {
     const { loader, dataLength, ...rest } = props;
     if (loader) {
       return (
-        <>
+        <Typography component="div" align="center">
           <CircularProgress size={24} />
-        </>
+        </Typography>
       );
     }
     if (!dataLength) {
       return (
-        <Typography variant="h3">OOPS!, No More Trainees</Typography>
+        <Typography align="center" variant="h3">OOPS!, No More Trainees</Typography>
       );
     }
     return (
