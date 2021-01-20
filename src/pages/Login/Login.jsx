@@ -101,7 +101,7 @@ const LoginUi = (props) => {
 
   const handleCallApi = async (openSnackbar) => {
     const response = await callApi('post', 'user/login', state);
-    const { data: { message, status, data } } = response;
+    const { data: { message, status, data } = {} } = response;
     if (data) {
       openSnackbar(status, message);
       localStorage.setItem('token', data.token);

@@ -1,12 +1,24 @@
 import axios from 'axios';
+import { baseUrl } from '../../configs/Constants';
 
-const callApi = async (method, route, input) => {
-  const serverUrl = 'http://localhost:9000/api/';
+const callApi = async (method, route, data) => {
   try {
-    const response = await axios[method](`${serverUrl}${route}`, input);
+    const response = await axios({
+      method,
+      url: `${baseUrl}${route}`,
+      data,
+    });
     return response;
   } catch (err) {
-    return err.response;
+    const serverError = {
+      data: {
+        message: 'Internal Server Error',
+      },
+    };
+    if (err.response) {
+      return err.response;
+    }
+    return serverError;
   }
 };
 
