@@ -12,22 +12,22 @@ const useStyles = makeStyles((theme) => ({
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const classes = useStyles();
-  if (localStorage.getItem('token')) {
+  if (!localStorage.getItem('token')) {
     return (
-      <Route
-        {...rest}
-        render={(matchProps) => (
-          <PrivateLayout>
-            <div className={classes.navBody}>
-              <Component {...matchProps} />
-            </div>
-          </PrivateLayout>
-        )}
-      />
+      <Redirect path="/" to="/login" />
     );
   }
   return (
-    <Redirect path="/" to="/login" />
+    <Route
+      {...rest}
+      render={(matchProps) => (
+        <PrivateLayout>
+          <div className={classes.navBody}>
+            <Component {...matchProps} />
+          </div>
+        </PrivateLayout>
+      )}
+    />
   );
 };
 

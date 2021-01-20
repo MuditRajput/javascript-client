@@ -1,11 +1,12 @@
 import axios from 'axios';
-import { baseUrl } from '../../configs/Constants';
+import { baseURL } from '../../configs/Constants';
 
 const callApi = async (method, route, data) => {
   try {
     const response = await axios({
       method,
-      url: `${baseUrl}${route}`,
+      baseURL,
+      url: route,
       data,
     });
     return response;
