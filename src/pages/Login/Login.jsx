@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Container, Typography, Button, TextField, InputAdornment, makeStyles,
+  Container, Typography, Button, TextField, InputAdornment, makeStyles, CircularProgress,
 } from '@material-ui/core';
 import EmailIcon from '@material-ui/icons/Email';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import * as yup from 'yup';
+import { callApi } from '../../lib/utils';
+import { SnackbarContext } from '../../contexts';
 
 export const useStyle = makeStyles((theme) => ({
   flexcolumnCenter: {
@@ -19,7 +22,7 @@ export const useStyle = makeStyles((theme) => ({
     boxSizing: 'border-box',
   },
   iconRound: {
-    padding: '5px',
+    padding: '4px',
     borderRadius: '50%',
     background: theme.palette.secondary.main,
     color: 'white',
@@ -28,9 +31,17 @@ export const useStyle = makeStyles((theme) => ({
   buttonLogin: {
     marginTop: '25px',
   },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
 
-const LoginUi = () => {
+const LoginUi = (props) => {
+  const { history } = props;
   const classes = useStyle();
   const schema = yup.object().shape({
     email: yup.string().required('Email is required').email(),
@@ -40,6 +51,8 @@ const LoginUi = () => {
   const [state, setstate] = useState({
     email: '', password: '',
   });
+
+  const [loading, setLoading] = useState(false);
 
   const [onBlur, setBlur] = useState({});
 
@@ -86,58 +99,83 @@ const LoginUi = () => {
     });
   };
 
-  const hangleLogin = () => {
+  const handleCallApi = async (openSnackbar) => {
+    const response = await callApi('post', 'user/login', state);
+    const { data: { message, status, data } = {} } = response;
+    if (data) {
+      openSnackbar(status, message);
+      localStorage.setItem('token', data.token);
+      history.push('/');
+    } else {
+      setLoading(false);
+      openSnackbar('error', message);
+    }
+  };
+
+  const hangleLogin = (openSnackbar) => {
+    setLoading(true);
     console.log(state);
+    handleCallApi(openSnackbar);
   };
 
   return (
-    <Container
-      maxWidth="xs"
-    >
-      <div className={classes.flexcolumnCenter}>
-        <LockOutlinedIcon className={classes.iconRound} />
-        <Typography variant="h5">
-          Login
-        </Typography>
-        <form>
-          <TextField
-            required
-            fullWidth
-            size="small"
-            margin="normal"
-            error={!!getError('email')}
-            helperText={getError('email')}
-            onChange={(input) => handleInputField('email', input)}
-            onBlur={() => handleBlur('email')}
-            label="Email"
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><EmailIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
-            }}
-            variant="outlined"
-          />
-          <TextField
-            required
-            fullWidth
-            margin="normal"
-            size="small"
-            type="password"
-            error={!!getError('password')}
-            helperText={getError('password')}
-            onChange={(input) => handleInputField('password', input)}
-            onBlur={() => handleBlur('password')}
-            label="password"
-            InputProps={{
-              startAdornment: <InputAdornment position="start"><VisibilityOffIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
-            }}
-            variant="outlined"
-          />
-          <Button className={classes.buttonLogin} fullWidth disabled={hasErrors() || !isTouched()} onClick={hangleLogin} color="primary" variant="contained">
-            Login
-          </Button>
-        </form>
-      </div>
-    </Container>
+    <SnackbarContext.Consumer>
+      {({ openSnackbar }) => (
+        <Container
+          maxWidth="xs"
+        >
+          <div className={classes.flexcolumnCenter}>
+            <LockOutlinedIcon className={classes.iconRound} />
+            <Typography variant="h5">
+              Login
+            </Typography>
+            <form>
+              <TextField
+                required
+                fullWidth
+                size="small"
+                margin="normal"
+                error={!!getError('email')}
+                helperText={getError('email')}
+                onChange={(input) => handleInputField('email', input)}
+                onBlur={() => handleBlur('email')}
+                label="Email"
+                InputProps={{
+                  startAdornment: <InputAdornment position="start"><EmailIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
+                }}
+                variant="outlined"
+              />
+              <TextField
+                required
+                fullWidth
+                margin="normal"
+                size="small"
+                type="password"
+                error={!!getError('password')}
+                helperText={getError('password')}
+                onChange={(input) => handleInputField('password', input)}
+                onBlur={() => handleBlur('password')}
+                label="password"
+                InputProps={{
+                  startAdornment: <InputAdornment position="start"><VisibilityOffIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
+                }}
+                variant="outlined"
+              />
+              <Button className={classes.buttonLogin} fullWidth disabled={hasErrors() || !isTouched() || loading} onClick={() => hangleLogin(openSnackbar)} color="primary" variant="contained">
+                Login
+                { loading && <CircularProgress size={24} className={classes.buttonProgress} /> }
+              </Button>
+            </form>
+          </div>
+        </Container>
+      )}
+    </SnackbarContext.Consumer>
+
   );
+};
+
+LoginUi.propTypes = {
+  history: PropTypes.object.isRequired,
 };
 
 export default LoginUi;

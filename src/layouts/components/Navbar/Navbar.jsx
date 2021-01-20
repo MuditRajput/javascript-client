@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   makeStyles, AppBar, Toolbar, Typography, Button,
 } from '@material-ui/core';
@@ -17,7 +18,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NavBar = () => {
+const NavBar = (props) => {
+  const { handleLogout } = props;
   const classes = useStyles();
 
   return (
@@ -39,11 +41,17 @@ const NavBar = () => {
           <NavLink to="/children-demo">
             <Button className={classes.menuButton}>CHILDREN DEMO</Button>
           </NavLink>
-          <Button className={classes.menuButton} color="inherit">LOGOUT</Button>
+          <NavLink to="/logout">
+            <Button onClick={handleLogout} className={classes.menuButton} color="inherit">LOGOUT</Button>
+          </NavLink>
         </Toolbar>
       </AppBar>
     </div>
   );
+};
+
+NavBar.propTypes = {
+  handleLogout: PropTypes.func.isRequired,
 };
 
 export default NavBar;
