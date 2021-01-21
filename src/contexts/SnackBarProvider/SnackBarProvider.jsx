@@ -33,14 +33,14 @@ const SnackBarProvider = (props) => {
         }}
       >
         {children}
+        <SnackBar
+          duration={3000}
+          open={snackValues.open}
+          onClose={snackBarClose}
+          message={snackValues.message}
+          status={snackValues.status}
+        />
       </SnackbarContext.Provider>
-      <SnackBar
-        duration={3000}
-        open={snackValues.open}
-        onClose={snackBarClose}
-        message={snackValues.message}
-        status={snackValues.status}
-      />
     </>
   );
 };

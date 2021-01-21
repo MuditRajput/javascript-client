@@ -8,6 +8,7 @@ import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent, withLoaderAndMessage } from '../../components';
 import { SnackbarContext } from '../../contexts';
 import { callApi } from '../../lib/utils';
+import { limit } from '../../configs/Constants';
 
 const TraineeList = (props) => {
   const { match, history } = props;
@@ -44,15 +45,16 @@ const TraineeList = (props) => {
 
   const handleSubmit = async (openSnackbar, state) => {
     setLoading(true);
+    console.log(state);
     const response = await callApi('post', '/trainee', state);
-    if (response.data) {
-      const { data: { message } } = response;
-      openSnackbar('success', message);
+    const { data: { message, status, data } = {} } = response;
+    if (data) {
+      openSnackbar(status, message);
       setOpen(false);
       setLoading(false);
     } else {
-      openSnackbar('error', 'Trainee Not Created');
       setLoading(false);
+      openSnackbar('error', message);
     }
   };
 
@@ -77,7 +79,7 @@ const TraineeList = (props) => {
     console.log(state);
     const updatedUser = { originalId: details.originalId, dataToUpdate: state };
     const response = await callApi('put', '/trainee', updatedUser);
-    const { data: { message, status, data } } = response;
+    const { data: { message = '', status = '', data = {} } = {} } = response;
     if (data) {
       openSnackbar(status, message);
       setLoading(false);
@@ -88,21 +90,20 @@ const TraineeList = (props) => {
     }
   };
 
-  const limit = 5;
-
-  const getTrainee = () => {
+  const getTrainee = async () => {
     const skip = page * limit;
-    callApi('get', 'trainee', {}, { skip, limit })
-      .then((response) => {
-        const { data: { data: { UsersList, totalCount } } } = response;
-        setTrainees({ Trainees: UsersList, TotalCount: totalCount });
-        localStorage.setItem('Trainees', JSON.stringify(UsersList));
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        setTrainees([]);
+    try {
+      const response = await callApi('get', 'trainee', {}, {
+        skip, limit, sortBy: orderBy, sortOrder: order,
       });
+      const { data: { data: { UsersList = [], totalCount = 0 } = {} } = {} } = response;
+      setTrainees({ Trainees: UsersList, TotalCount: totalCount });
+      localStorage.setItem('Trainees', JSON.stringify(UsersList));
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      setTrainees([]);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -115,14 +116,16 @@ const TraineeList = (props) => {
 
   useEffect(() => {
     getTrainee();
-  }, [page, loading]);
+  }, [page, loading, order]);
 
   const handleDelete = async (openSnackbar) => {
     setLoading(true);
     console.log(details);
-    if (details.createdAt >= '2019-02-14') {
+    if (details.createdAt <= '2019-02-14') {
+      openSnackbar('error', 'Trainee cannot be Deleted');
+    } else {
       const response = await callApi('delete', `trainee/${details.originalId}`);
-      const { data: { message, status, data } } = response;
+      const { data: { message = {}, status = {}, data = {} } = {} } = response;
       if (data) {
         openSnackbar(status, message);
         setLoading(false);
@@ -134,8 +137,6 @@ const TraineeList = (props) => {
       if (page > 0 && trainees.Trainees.length === 1) {
         setPage(page - 1);
       }
-    } else {
-      openSnackbar('error', 'Trainee cannot be Deleted');
     }
     setDeleteOpen(false);
   };
@@ -149,7 +150,7 @@ const TraineeList = (props) => {
             Add Trainee
           </Button>
           <EnhancedTable
-            id="_id"
+            id="originalId"
             data={trainees.Trainees}
             loader={loading}
             dataLength={trainees.TotalCount}
@@ -194,15 +195,13 @@ const TraineeList = (props) => {
             open={open}
             loading={loading}
             onClose={handleClose}
-            onSubmit={(state) => handleSubmit(openSnackbar, state)}
+            onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
           <EditDialog
             open={editOpen}
             loading={loading}
             onClose={handleEditDialogClose}
-            onSubmit={
-              (state) => handleEditDialogSubmit(openSnackbar, state)
-            }
+            onSubmit={(editTraineeState) => handleEditDialogSubmit(openSnackbar, editTraineeState)}
             defaultValues={details}
           />
           <DeleteDialog

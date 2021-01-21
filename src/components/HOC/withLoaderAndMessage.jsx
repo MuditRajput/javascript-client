@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CircularProgress, Typography } from '@material-ui/core';
@@ -8,14 +7,14 @@ const withLoaderAndMessage = (WrappedComponent) => {
     const { loader, dataLength, ...rest } = props;
     if (loader) {
       return (
-        <>
+        <Typography component="div" align="center">
           <CircularProgress size={24} />
-        </>
+        </Typography>
       );
     }
     if (!dataLength) {
       return (
-        <Typography variant="h3">OOPS!, No More Trainees</Typography>
+        <Typography align="center" variant="h3">OOPS!, No More Trainees</Typography>
       );
     }
     return (
