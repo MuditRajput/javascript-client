@@ -8,6 +8,7 @@ import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent, withLoaderAndMessage } from '../../components';
 import { SnackbarContext } from '../../contexts';
 import { callApi } from '../../lib/utils';
+import { limit } from '../../configs/Constants';
 
 const TraineeList = (props) => {
   const { match, history } = props;
@@ -78,8 +79,6 @@ const TraineeList = (props) => {
     setEditOpen(false);
     console.log(state);
   };
-
-  const limit = 5;
 
   const getTrainee = () => {
     const skip = page * limit;
