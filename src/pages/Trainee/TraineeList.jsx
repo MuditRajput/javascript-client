@@ -80,19 +80,18 @@ const TraineeList = (props) => {
     console.log(state);
   };
 
-  const getTrainee = () => {
+  const getTrainee = async () => {
     const skip = page * limit;
-    callApi('get', 'trainee', {}, { skip, limit })
-      .then((response) => {
-        const { data: { data: { UsersList, totalCount } } } = response;
-        setTrainees({ Trainees: UsersList, TotalCount: totalCount });
-        localStorage.setItem('Trainees', JSON.stringify(UsersList));
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-        setTrainees([]);
-      });
+    try {
+      const response = await callApi('get', 'trainee', {}, { skip, limit });
+      const { data: { data: { UsersList = [], totalCount = 0 } = {} } = {} } = response;
+      setTrainees({ Trainees: UsersList, TotalCount: totalCount });
+      localStorage.setItem('Trainees', JSON.stringify(UsersList));
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      setTrainees([]);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -125,7 +124,7 @@ const TraineeList = (props) => {
             Add Trainee
           </Button>
           <EnhancedTable
-            id="_id"
+            id="originalId"
             data={trainees.Trainees}
             loader={loading}
             dataLength={trainees.TotalCount}

@@ -24,11 +24,10 @@ const useStyles = makeStyles(() => ({
 const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
 
 const TraineeDetail = (props) => {
+  const classes = useStyles();
   const { match: { params: { id = '' } = {} } = {} } = props;
   const Trainees = JSON.parse(localStorage.getItem('Trainees'));
-  const traineeId = '_id';
-  const classes = useStyles();
-  const detail = Trainees.find((trainee) => trainee[traineeId] === id);
+  const detail = Trainees.find(({ originalId: traineeId } = {}) => traineeId === id);
   if (!detail) {
     return <NoMatch />;
   }
