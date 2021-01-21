@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
-import trainees from './data/Trainee';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
-import { TableComponent } from '../../components';
+import { TableComponent, withLoaderAndMessage } from '../../components';
 import { SnackbarContext } from '../../contexts';
+import { callApi } from '../../lib/utils';
+import { limit } from '../../configs/Constants';
 
 const TraineeList = (props) => {
   const { match, history } = props;
@@ -18,6 +19,12 @@ const TraineeList = (props) => {
   const [orderBy, setOrderBy] = React.useState();
   const [page, setPage] = React.useState(0);
   const [details, setDetails] = React.useState({});
+  const [trainees, setTrainees] = React.useState({
+    Trainees: [], TotalCount: 0,
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  const EnhancedTable = withLoaderAndMessage(TableComponent);
 
   const handleSort = (property) => {
     setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
@@ -36,14 +43,19 @@ const TraineeList = (props) => {
     setOpen(false);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleSubmit = (openSnackbar, state) => {
-    openSnackbar('success', 'Trainee Created Successfully');
-    setOpen(false);
+  const handleSubmit = async (openSnackbar, state) => {
+    setLoading(true);
     console.log(state);
+    const response = await callApi('post', '/trainee', state);
+    const { data: { message, status, data } = {} } = response;
+    if (data) {
+      openSnackbar(status, message);
+      setOpen(false);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      openSnackbar('error', message);
+    }
   };
 
   const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
@@ -68,9 +80,30 @@ const TraineeList = (props) => {
     console.log(state);
   };
 
+  const getTrainee = async () => {
+    const skip = page * limit;
+    try {
+      const response = await callApi('get', 'trainee', {}, { skip, limit });
+      const { data: { data: { UsersList = [], totalCount = 0 } = {} } = {} } = response;
+      setTrainees({ Trainees: UsersList, TotalCount: totalCount });
+      localStorage.setItem('Trainees', JSON.stringify(UsersList));
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      setTrainees([]);
+    }
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
+  useEffect(() => {
+    getTrainee();
+  }, [page, loading]);
 
   const handleDelete = (openSnackbar) => {
     if (details.createdAt >= '2019-02-14') {
@@ -90,9 +123,11 @@ const TraineeList = (props) => {
           <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
             Add Trainee
           </Button>
-          <TableComponent
-            id="id"
-            data={trainees}
+          <EnhancedTable
+            id="originalId"
+            data={trainees.Trainees}
+            loader={loading}
+            dataLength={trainees.TotalCount}
             columns={[
               {
                 field: 'name',
@@ -126,11 +161,13 @@ const TraineeList = (props) => {
             onSelect={handleSelect}
             page={page}
             onChangePage={handleChangePage}
-            count={100}
-            rowsPerPage={5}
+            count={trainees.TotalCount}
+            rowsPerPage={limit}
+
           />
           <AddDialog
             open={open}
+            loading={loading}
             onClose={handleClose}
             onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
@@ -155,4 +192,5 @@ TraineeList.propTypes = {
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
+
 export default TraineeList;

@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import { Math } from '../../components';
 
-const MathDemo = () => (
+const ChildrenDemo = () => (
   <>
     <Math first={1} second={0} operator="+">
       {
@@ -26,4 +26,4 @@ const MathDemo = () => (
   </>
 );
 
-export default MathDemo;
+export default ChildrenDemo;

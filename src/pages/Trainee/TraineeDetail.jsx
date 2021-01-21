@@ -5,7 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import Trainees from './data/Trainee';
 import { NoMatch } from '..';
 
 const useStyles = makeStyles(() => ({
@@ -25,9 +24,10 @@ const useStyles = makeStyles(() => ({
 const getDateFormatted = (date) => moment(date).format('dddd, MMMM Do yyyy, hh:mm:ss a');
 
 const TraineeDetail = (props) => {
-  const { match: { params: { id = '' } = {} } = {} } = props;
   const classes = useStyles();
-  const detail = Trainees.find((trainee) => trainee.id === id);
+  const { match: { params: { id = '' } = {} } = {} } = props;
+  const Trainees = JSON.parse(localStorage.getItem('Trainees'));
+  const detail = Trainees.find(({ originalId: traineeId } = {}) => traineeId === id);
   if (!detail) {
     return <NoMatch />;
   }

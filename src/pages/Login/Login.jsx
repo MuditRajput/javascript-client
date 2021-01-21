@@ -52,9 +52,9 @@ const LoginUi = (props) => {
     email: '', password: '',
   });
 
-  const [loading, setLoading] = useState(false);
-
   const [onBlur, setBlur] = useState({});
+
+  const [loading, setLoading] = useState(false);
 
   const [schemaErrors, setSchemaErrors] = useState({});
 
@@ -155,7 +155,7 @@ const LoginUi = (props) => {
                 helperText={getError('password')}
                 onChange={(input) => handleInputField('password', input)}
                 onBlur={() => handleBlur('password')}
-                label="password"
+                label="Password"
                 InputProps={{
                   startAdornment: <InputAdornment position="start"><VisibilityOffIcon style={{ fontSize: 20 }} opacity="0.6" /></InputAdornment>,
                 }}

@@ -17,7 +17,6 @@ const TableComponent = (props) => {
     id, data, columns, order, orderBy, onSort, onSelect,
     actions, count, page, rowsPerPage, onChangePage,
   } = props;
-
   const PaginationCell = () => (
     <TablePagination
       rowsPerPageOptions={[]}
