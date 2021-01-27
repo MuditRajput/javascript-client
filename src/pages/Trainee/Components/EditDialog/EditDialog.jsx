@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  DialogActions, Dialog, DialogContentText, DialogContent,
+  DialogActions, Dialog, DialogContentText, DialogContent, CircularProgress,
   DialogTitle, Button, TextField, InputAdornment, makeStyles,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -16,8 +16,9 @@ export const useStyle = makeStyles(() => ({
 
 const EditDialog = (props) => {
   const {
-    open, onClose, onSubmit, defaultValues,
+    open, onClose, onSubmit, defaultValues, loading,
   } = props;
+  const { email, name } = defaultValues;
   const classes = useStyle();
   const [state, setstate] = useState({
     name: '', email: '',
@@ -104,7 +105,7 @@ const EditDialog = (props) => {
           error={!!getError('name')}
           helperText={getError('name')}
           className={classes.margin}
-          defaultValue={defaultValues.name}
+          defaultValue={name}
           onChange={(input) => handleInputField('name', input)}
           onBlur={() => handleBlur('name')}
           label="Name"
@@ -120,7 +121,7 @@ const EditDialog = (props) => {
           error={!!getError('email')}
           helperText={getError('email')}
           className={classes.margin}
-          defaultValue={defaultValues.email}
+          defaultValue={email}
           onChange={(input) => handleInputField('email', input)}
           onBlur={() => handleBlur('email')}
           label="Email"
@@ -136,6 +137,7 @@ const EditDialog = (props) => {
         </Button>
         <Button disabled={hasErrors() || !isTouched()} onClick={() => handleSubmit(state)} color="primary">
           Submit
+          { loading && <CircularProgress />}
         </Button>
       </DialogActions>
     </Dialog>
@@ -147,11 +149,13 @@ EditDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.object,
+  loading: PropTypes.bool,
 };
 
 EditDialog.defaultProps = {
   open: false,
   defaultValues: {},
+  loading: false,
 };
 
 export default EditDialog;
