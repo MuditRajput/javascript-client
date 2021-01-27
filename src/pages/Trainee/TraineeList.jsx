@@ -1,14 +1,17 @@
+/* eslint-disable no-shadow */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
+import { useQuery } from '@apollo/client';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent, withLoaderAndMessage } from '../../components';
 import { SnackbarContext } from '../../contexts';
 import { callApi } from '../../lib/utils';
 import { limit } from '../../configs/Constants';
+import { GETALL_TRAINEES } from './query';
 
 const TraineeList = (props) => {
   const { match, history } = props;
@@ -20,9 +23,10 @@ const TraineeList = (props) => {
   const [page, setPage] = React.useState(0);
   const [details, setDetails] = React.useState({});
   const [trainees, setTrainees] = React.useState({
-    Trainees: [], TotalCount: 0,
+    traineeList: [], totalCount: 0,
   });
   const [loading, setLoading] = React.useState(true);
+  const { refetch } = useQuery(GETALL_TRAINEES);
 
   const EnhancedTable = withLoaderAndMessage(TableComponent);
 
@@ -93,12 +97,14 @@ const TraineeList = (props) => {
   const getTrainee = async () => {
     const skip = page * limit;
     try {
-      const response = await callApi('get', 'trainee', {}, {
-        skip, limit, sortBy: orderBy, sortOrder: order,
-      });
-      const { data: { data: { UsersList = [], totalCount = 0 } = {} } = {} } = response;
-      setTrainees({ Trainees: UsersList, TotalCount: totalCount });
-      localStorage.setItem('Trainees', JSON.stringify(UsersList));
+      const response = await refetch({ skip, limit });
+      const {
+        data: {
+          getAllTrainees: { data: { UsersList = [], totalCount = 0 } = {} } = {},
+        } = {},
+      } = response;
+      setTrainees({ traineeList: UsersList, totalCount });
+      localStorage.setItem('traineeList', JSON.stringify(UsersList));
       setLoading(false);
     } catch {
       setLoading(false);
@@ -134,7 +140,8 @@ const TraineeList = (props) => {
         openSnackbar('error', message);
         setLoading(false);
       }
-      if (page > 0 && trainees.Trainees.length === 1) {
+      const { traineeList } = trainees;
+      if (page > 0 && traineeList.length === 1) {
         setPage(page - 1);
       }
     }
@@ -151,9 +158,9 @@ const TraineeList = (props) => {
           </Button>
           <EnhancedTable
             id="originalId"
-            data={trainees.Trainees}
+            data={trainees.traineeList}
             loader={loading}
-            dataLength={trainees.TotalCount}
+            dataLength={trainees.totalCount}
             columns={[
               {
                 field: 'name',
@@ -187,7 +194,7 @@ const TraineeList = (props) => {
             onSelect={handleSelect}
             page={page}
             onChangePage={handleChangePage}
-            count={trainees.TotalCount}
+            count={trainees.totalCount}
             rowsPerPage={limit}
 
           />
