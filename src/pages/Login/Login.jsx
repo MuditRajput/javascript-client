@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,9 +7,11 @@ import {
 import EmailIcon from '@material-ui/icons/Email';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import { useMutation } from '@apollo/client';
 import * as yup from 'yup';
-import { callApi } from '../../lib/utils';
+// import { callApi } from '../../lib/utils';
 import { SnackbarContext } from '../../contexts';
+import { LOGIN_USER } from './mutation';
 
 export const useStyle = makeStyles((theme) => ({
   flexcolumnCenter: {
@@ -51,7 +54,7 @@ const LoginUi = (props) => {
   const [state, setstate] = useState({
     email: '', password: '',
   });
-
+  const [loginUser] = useMutation(LOGIN_USER);
   const [onBlur, setBlur] = useState({});
 
   const [loading, setLoading] = useState(false);
@@ -100,15 +103,21 @@ const LoginUi = (props) => {
   };
 
   const handleCallApi = async (openSnackbar) => {
-    const response = await callApi('post', 'user/login', state);
-    const { data: { message, status, data } = {} } = response;
-    if (data) {
-      openSnackbar(status, message);
-      localStorage.setItem('token', data.token);
-      history.push('/');
-    } else {
+    const { email, password } = state;
+    try {
+      const response = await loginUser({ variables: { email, password } });
+      const { data: { loginUser: { data, status, message } = {} } = {} } = response;
+      if (data) {
+        openSnackbar(status, message);
+        localStorage.setItem('token', data.token);
+        history.push('/');
+      } else {
+        setLoading(false);
+        openSnackbar('error', message);
+      }
+    } catch (err) {
       setLoading(false);
-      openSnackbar('error', message);
+      openSnackbar('error', 'Something Went Wrong');
     }
   };
 
