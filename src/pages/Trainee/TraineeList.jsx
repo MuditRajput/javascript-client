@@ -1,17 +1,16 @@
-/* eslint-disable no-shadow */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import moment from 'moment';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { AddDialog, EditDialog, DeleteDialog } from './Components';
 import { TableComponent, withLoaderAndMessage } from '../../components';
 import { SnackbarContext } from '../../contexts';
-import { callApi } from '../../lib/utils';
 import { limit } from '../../configs/Constants';
 import { GETALL_TRAINEES } from './query';
+import { CREATE_TRAINEE, UPDATE_TRAINEE, DELETE_TRAINEE } from './mutation';
 
 const TraineeList = (props) => {
   const { match, history } = props;
@@ -27,6 +26,9 @@ const TraineeList = (props) => {
   });
   const [loading, setLoading] = React.useState(true);
   const { refetch } = useQuery(GETALL_TRAINEES);
+  const [createTrainee] = useMutation(CREATE_TRAINEE);
+  const [updateTrainee] = useMutation(UPDATE_TRAINEE);
+  const [deleteTrainee] = useMutation(DELETE_TRAINEE);
 
   const EnhancedTable = withLoaderAndMessage(TableComponent);
 
@@ -50,15 +52,20 @@ const TraineeList = (props) => {
   const handleSubmit = async (openSnackbar, state) => {
     setLoading(true);
     console.log(state);
-    const response = await callApi('post', '/trainee', state);
-    const { data: { message, status, data } = {} } = response;
-    if (data) {
-      openSnackbar(status, message);
-      setOpen(false);
+    const { name, email, password } = state;
+    try {
+      const response = await createTrainee({ variables: { name, email, password } });
+      const { data: { createTrainee: { message, status } = {} } = {} } = response;
+      if (status === 'success') {
+        openSnackbar(status, message);
+        setOpen(false);
+      } else {
+        openSnackbar('error', message);
+      }
       setLoading(false);
-    } else {
+    } catch {
       setLoading(false);
-      openSnackbar('error', message);
+      openSnackbar('error', 'Something Went Wrong');
     }
   };
 
@@ -81,16 +88,21 @@ const TraineeList = (props) => {
   const handleEditDialogSubmit = async (openSnackbar, state) => {
     setLoading(true);
     console.log(state);
-    const updatedUser = { originalId: details.originalId, dataToUpdate: state };
-    const response = await callApi('put', '/trainee', updatedUser);
-    const { data: { message = '', status = '', data = {} } = {} } = response;
-    if (data) {
-      openSnackbar(status, message);
+    const { originalId } = details;
+    const { email, name } = state;
+    try {
+      const response = await updateTrainee({ variables: { id: originalId, email, name } });
+      const { data: { updateTrainee: { message = '', status = '' } = {} } = {} } = response;
+      if (status === 'success') {
+        openSnackbar(status, message);
+        setEditOpen(false);
+      } else {
+        openSnackbar('error', message);
+      }
       setLoading(false);
-      setEditOpen(false);
-    } else {
-      openSnackbar('error', message);
+    } catch {
       setLoading(false);
+      openSnackbar('error', 'Something Went Wrong');
     }
   };
 
@@ -122,27 +134,31 @@ const TraineeList = (props) => {
 
   useEffect(() => {
     getTrainee();
-  }, [page, loading, order]);
+  }, [page, loading]);
 
   const handleDelete = async (openSnackbar) => {
     setLoading(true);
     console.log(details);
+    const { originalId } = details;
     if (details.createdAt <= '2019-02-14') {
       openSnackbar('error', 'Trainee cannot be Deleted');
     } else {
-      const response = await callApi('delete', `trainee/${details.originalId}`);
-      const { data: { message = {}, status = {}, data = {} } = {} } = response;
-      if (data) {
-        openSnackbar(status, message);
+      try {
+        const response = await deleteTrainee({ variables: { id: originalId } });
+        const { data: { deleteTrainee: { message = {}, status = {} } = {} } = {} } = response;
+        if (status === 'success') {
+          openSnackbar(status, message);
+          setEditOpen(false);
+        } else {
+          openSnackbar('error', message);
+        }
         setLoading(false);
-        setEditOpen(false);
-      } else {
-        openSnackbar('error', message);
-        setLoading(false);
-      }
-      const { traineeList } = trainees;
-      if (page > 0 && traineeList.length === 1) {
-        setPage(page - 1);
+        const { traineeList } = trainees;
+        if (page > 0 && traineeList.length === 1) {
+          setPage(page - 1);
+        }
+      } catch {
+        openSnackbar('error', 'Something Went Wrong');
       }
     }
     setDeleteOpen(false);
