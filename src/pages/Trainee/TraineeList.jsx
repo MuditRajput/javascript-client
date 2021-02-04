@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Button, CssBaseline } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
@@ -11,26 +11,121 @@ import { SnackbarContext } from '../../contexts';
 import { limit } from '../../configs/Constants';
 import { GETALL_TRAINEES } from './query';
 import { CREATE_TRAINEE, UPDATE_TRAINEE, DELETE_TRAINEE } from './mutation';
+import { TRAINEE_UPDATED, TRAINEE_DELETED, TRAINEE_ADDED } from './subscription';
 
 const TraineeList = (props) => {
   const { match, history } = props;
-  const [open, setOpen] = React.useState(false);
-  const [editOpen, setEditOpen] = React.useState(false);
-  const [deleteOpen, setDeleteOpen] = React.useState(false);
-  const [order, setOrder] = React.useState();
-  const [orderBy, setOrderBy] = React.useState();
-  const [page, setPage] = React.useState(0);
-  const [details, setDetails] = React.useState({});
-  const [trainees, setTrainees] = React.useState({
-    traineeList: [], totalCount: 0,
+  const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [order, setOrder] = useState();
+  const [orderBy, setOrderBy] = useState();
+  const [page, setPage] = useState(0);
+  const [details, setDetails] = useState({});
+  const [loading, setLoading] = useState(false);
+  const skip = page * limit;
+
+  const {
+    subscribeToMore, refetch, data, loading: getAllTraineeLoading,
+  } = useQuery(GETALL_TRAINEES, {
+    variables: {
+      skip,
+      limit,
+      sortBy: orderBy,
+      sortOrder: order,
+    },
+    fetchPolicy: 'network-only',
   });
-  const [loading, setLoading] = React.useState(true);
-  const { refetch } = useQuery(GETALL_TRAINEES);
+
+  let trainees = [];
+  let traineeCount = 0;
+  if (!getAllTraineeLoading) {
+    try {
+      const {
+        getAllTrainees: { data: { UsersList = [], totalCount = 0 } = {} } = {},
+      } = data;
+      trainees = UsersList;
+      traineeCount = totalCount;
+    } catch {
+      trainees = [];
+      traineeCount = 0;
+    }
+  }
+
   const [createTrainee] = useMutation(CREATE_TRAINEE);
   const [updateTrainee] = useMutation(UPDATE_TRAINEE);
   const [deleteTrainee] = useMutation(DELETE_TRAINEE);
 
   const EnhancedTable = withLoaderAndMessage(TableComponent);
+
+  useEffect(() => {
+    subscribeToMore({
+      document: TRAINEE_UPDATED,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const { getAllTrainees: { data: { UsersList } } = {} } = prev;
+        const { data: { traineeUpdated: { data: newTrainee } } } = subscriptionData;
+        const newList = UsersList.map((trainee) => {
+          if (trainee.originalId === newTrainee.originalId) {
+            return {
+              ...trainee,
+              ...newTrainee,
+            };
+          }
+          return trainee;
+        });
+        return {
+          getAllTrainees: {
+            ...prev,
+            data: {
+              UsersList: newList,
+            },
+          },
+        };
+      },
+    });
+    subscribeToMore({
+      document: TRAINEE_DELETED,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const { getAllTrainees: { data: { UsersList = [], totalCount = 0 } } = {} } = prev;
+        const newList = UsersList.map((trainee) => {
+          if (trainee.originalId === details.originalId) {
+            return {
+            };
+          }
+          return trainee;
+        });
+        return {
+          getAllTrainees: {
+            ...prev,
+            data: {
+              UsersList: newList,
+              totalCount: totalCount - 1,
+            },
+          },
+        };
+      },
+    });
+    subscribeToMore({
+      document: TRAINEE_ADDED,
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev;
+        const { getAllTrainees: { data: { UsersList, totalCount } } = {} } = prev;
+        const { data: { traineeAdded: { data: newTrainee } } } = subscriptionData;
+        const newList = [newTrainee, ...UsersList];
+        return {
+          getAllTrainees: {
+            ...prev,
+            data: {
+              UsersList: newList,
+              totalCount: totalCount + 1,
+            },
+          },
+        };
+      },
+    });
+  }, []);
 
   const handleSort = (property) => {
     setOrder(order === 'asc' && orderBy === property ? 'desc' : 'asc');
@@ -106,35 +201,14 @@ const TraineeList = (props) => {
     }
   };
 
-  const getTrainee = async () => {
-    const skip = page * limit;
-    try {
-      const response = await refetch({ skip, limit });
-      const {
-        data: {
-          getAllTrainees: { data: { UsersList = [], totalCount = 0 } = {} } = {},
-        } = {},
-      } = response;
-      setTrainees({ traineeList: UsersList, totalCount });
-      localStorage.setItem('traineeList', JSON.stringify(UsersList));
-      setLoading(false);
-    } catch {
-      setLoading(false);
-      setTrainees([]);
-    }
-  };
-
   const handleChangePage = (event, newPage) => {
+    refetch();
     setPage(newPage);
   };
 
   const handleDeleteClose = () => {
     setDeleteOpen(false);
   };
-
-  useEffect(() => {
-    getTrainee();
-  }, [page, loading]);
 
   const handleDelete = async (openSnackbar) => {
     setLoading(true);
@@ -153,8 +227,7 @@ const TraineeList = (props) => {
           openSnackbar('error', message);
         }
         setLoading(false);
-        const { traineeList } = trainees;
-        if (page > 0 && traineeList.length === 1) {
+        if (page > 0 && trainees.length === 1) {
           setPage(page - 1);
         }
       } catch {
@@ -174,9 +247,9 @@ const TraineeList = (props) => {
           </Button>
           <EnhancedTable
             id="originalId"
-            data={trainees.traineeList}
-            loader={loading}
-            dataLength={trainees.totalCount}
+            data={trainees}
+            loader={getAllTraineeLoading}
+            dataLength={traineeCount}
             columns={[
               {
                 field: 'name',
@@ -210,7 +283,7 @@ const TraineeList = (props) => {
             onSelect={handleSelect}
             page={page}
             onChangePage={handleChangePage}
-            count={trainees.totalCount}
+            count={traineeCount}
             rowsPerPage={limit}
 
           />

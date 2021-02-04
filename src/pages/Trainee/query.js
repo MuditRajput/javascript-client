@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const GETALL_TRAINEES = gql`
-  query GetAllTrainees($skip: Int, $limit: Int ) {
-    getAllTrainees(options: { skip: $skip, limit: $limit }) {
+  query GetAllTrainees($skip: Int, $limit: Int, $sortBy: String, $sortOrder: String ) {
+    getAllTrainees(options: { skip: $skip, limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder }) {
       message
       status
       data {
@@ -14,6 +14,16 @@ const GETALL_TRAINEES = gql`
           createdAt
         }
       }
+    }
+  }
+`;
+
+export const GET_ONE = gql`
+  query GetOneTrainee($id: ID!) {
+    getOneTrainee(id: $id) {
+      name
+      email
+      createdAt
     }
   }
 `;
