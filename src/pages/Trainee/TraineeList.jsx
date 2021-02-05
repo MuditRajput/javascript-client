@@ -20,7 +20,7 @@ const TraineeList = (props) => {
   const [page, setPage] = React.useState(0);
   const [details, setDetails] = React.useState({});
   const [trainees, setTrainees] = React.useState({
-    Trainees: [], TotalCount: 0,
+    traineeList: [], totalCount: 0,
   });
   const [loading, setLoading] = React.useState(true);
 
@@ -97,8 +97,8 @@ const TraineeList = (props) => {
         skip, limit, sortBy: orderBy, sortOrder: order,
       });
       const { data: { data: { UsersList = [], totalCount = 0 } = {} } = {} } = response;
-      setTrainees({ Trainees: UsersList, TotalCount: totalCount });
-      localStorage.setItem('Trainees', JSON.stringify(UsersList));
+      setTrainees({ traineeList: UsersList, totalCount });
+      localStorage.setItem('traineeList', JSON.stringify(UsersList));
       setLoading(false);
     } catch {
       setLoading(false);
@@ -134,7 +134,8 @@ const TraineeList = (props) => {
         openSnackbar('error', message);
         setLoading(false);
       }
-      if (page > 0 && trainees.Trainees.length === 1) {
+      const { traineeList } = trainees;
+      if (page > 0 && traineeList.length === 1) {
         setPage(page - 1);
       }
     }
@@ -151,9 +152,9 @@ const TraineeList = (props) => {
           </Button>
           <EnhancedTable
             id="originalId"
-            data={trainees.Trainees}
+            data={trainees.traineeList}
             loader={loading}
-            dataLength={trainees.TotalCount}
+            dataLength={trainees.totalCount}
             columns={[
               {
                 field: 'name',
@@ -187,7 +188,7 @@ const TraineeList = (props) => {
             onSelect={handleSelect}
             page={page}
             onChangePage={handleChangePage}
-            count={trainees.TotalCount}
+            count={trainees.totalCount}
             rowsPerPage={limit}
 
           />
