@@ -26,7 +26,7 @@ const TraineeList = (props) => {
   const skip = page * limit;
 
   const {
-    subscribeToMore, refetch, data, loading: getAllTraineeLoading,
+    subscribeToMore, data, loading: getAllTraineeLoading,
   } = useQuery(GETALL_TRAINEES, {
     variables: {
       skip,
@@ -34,7 +34,7 @@ const TraineeList = (props) => {
       sortBy: orderBy,
       sortOrder: order,
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
 
   let trainees = [];
@@ -63,8 +63,8 @@ const TraineeList = (props) => {
       document: TRAINEE_UPDATED,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
-        const { getAllTrainees: { data: { UsersList } } = {} } = prev;
-        const { data: { traineeUpdated: { data: newTrainee } } } = subscriptionData;
+        const { getAllTrainees: { data: { UsersList } = {} } = {} } = prev;
+        const { data: { traineeUpdated: { data: newTrainee } = {} } = {} } = subscriptionData;
         const newList = UsersList.map((trainee) => {
           if (trainee.originalId === newTrainee.originalId) {
             return {
@@ -91,8 +91,7 @@ const TraineeList = (props) => {
         const { getAllTrainees: { data: { UsersList = [], totalCount = 0 } } = {} } = prev;
         const newList = UsersList.map((trainee) => {
           if (trainee.originalId === details.originalId) {
-            return {
-            };
+            return {};
           }
           return trainee;
         });
@@ -111,8 +110,8 @@ const TraineeList = (props) => {
       document: TRAINEE_ADDED,
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev;
-        const { getAllTrainees: { data: { UsersList, totalCount } } = {} } = prev;
-        const { data: { traineeAdded: { data: newTrainee } } } = subscriptionData;
+        const { getAllTrainees: { data: { UsersList, totalCount } = {} } = {} } = prev;
+        const { data: { traineeAdded: { data: newTrainee } = {} } = {} } = subscriptionData;
         const newList = [newTrainee, ...UsersList];
         return {
           getAllTrainees: {
@@ -136,12 +135,8 @@ const TraineeList = (props) => {
     history.push(`${match.path}/${property}`);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpenAddTrainee = () => {
+    setOpen(!open);
   };
 
   const handleSubmit = async (openSnackbar, state) => {
@@ -202,7 +197,6 @@ const TraineeList = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    refetch();
     setPage(newPage);
   };
 
@@ -242,7 +236,7 @@ const TraineeList = (props) => {
       {({ openSnackbar }) => (
         <>
           <CssBaseline />
-          <Button size="large" variant="outlined" color="primary" onClick={handleClickOpen}>
+          <Button size="large" variant="outlined" color="primary" onClick={handleOpenAddTrainee}>
             Add Trainee
           </Button>
           <EnhancedTable
@@ -290,7 +284,7 @@ const TraineeList = (props) => {
           <AddDialog
             open={open}
             loading={loading}
-            onClose={handleClose}
+            onClose={handleOpenAddTrainee}
             onSubmit={(addTraineeState) => handleSubmit(openSnackbar, addTraineeState)}
           />
           <EditDialog

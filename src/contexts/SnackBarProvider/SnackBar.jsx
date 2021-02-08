@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar, IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import MuiAlert from '@material-ui/lab/Alert';
 
 const SnackBar = (props) => {
@@ -11,6 +12,9 @@ const SnackBar = (props) => {
     <Snackbar open={open} autoHideDuration={duration} onClose={onClose}>
       <MuiAlert variant="filled" severity={status}>
         {message}
+        <IconButton size="small" aria-label="close" color="inherit" onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
       </MuiAlert>
     </Snackbar>
   );

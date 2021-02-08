@@ -34,11 +34,14 @@ const TraineeDetail = (props) => {
   });
   const [state, setState] = useState({});
   const getTrainee = async () => {
-    const response = await refetch();
-    const { data: { getOneTrainee } = {} } = response;
-    setState(getOneTrainee);
+    try {
+      const response = await refetch();
+      const { data: { getOneTrainee: { data } = {} } = {} } = response;
+      setState(data);
+    } catch {
+      setState({});
+    }
   };
-  console.log(state);
   const classes = useStyles();
 
   useEffect(() => {

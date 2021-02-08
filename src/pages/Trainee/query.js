@@ -11,6 +11,7 @@ const GETALL_TRAINEES = gql`
           originalId
           name
           email
+          role
           createdAt
         }
       }
@@ -21,9 +22,12 @@ const GETALL_TRAINEES = gql`
 export const GET_ONE = gql`
   query GetOneTrainee($id: ID!) {
     getOneTrainee(id: $id) {
-      name
-      email
-      createdAt
+      data {
+        name
+        originalId
+        email
+        createdAt
+      }
     }
   }
 `;
